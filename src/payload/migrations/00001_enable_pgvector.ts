@@ -4,11 +4,17 @@ interface MigrationArgs {
   payload: Payload;
 }
 
+interface PayloadDatabaseExecutor {
+  drizzle: unknown;
+  execute: (args: { drizzle: unknown; raw: string }) => Promise<unknown>;
+}
+
 export const up = async (args: MigrationArgs): Promise<void> => {
   const { payload } = args;
+  const database = payload.db as unknown as PayloadDatabaseExecutor;
+
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (payload.db as any).execute({ raw: 'CREATE EXTENSION IF NOT EXISTS vector;' });
+    await database.execute({ drizzle: database.drizzle, raw: 'CREATE EXTENSION IF NOT EXISTS vector;' });
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     if (!errorMessage.includes('already installed')) {
@@ -19,6 +25,7 @@ export const up = async (args: MigrationArgs): Promise<void> => {
 
 export const down = async (args: MigrationArgs): Promise<void> => {
   const { payload } = args;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await (payload.db as any).execute({ raw: 'DROP EXTENSION IF EXISTS vector;' });
+  const database = payload.db as unknown as PayloadDatabaseExecutor;
+
+  await database.execute({ drizzle: database.drizzle, raw: 'DROP EXTENSION IF EXISTS vector;' });
 };

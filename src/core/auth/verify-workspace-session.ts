@@ -3,8 +3,8 @@ import { AppError, ErrorCode } from '@/core/errors';
 import { getSession } from './get-session';
 
 export async function verifyWorkspaceSession(req: Request): Promise<string> {
-  const user = await getSession(req) as User | null;
-  
+  const user = (await getSession(req)) as User | null;
+
   if (!user) {
     throw new AppError(
       'Authentication required',
@@ -13,9 +13,9 @@ export async function verifyWorkspaceSession(req: Request): Promise<string> {
       'medium'
     );
   }
-  
+
   const tenantRef = user.tenants?.[0]?.tenant;
-  const tenantId = typeof tenantRef === 'string' ? tenantRef : tenantRef?.id;
+  const tenantId = typeof tenantRef === 'number' ? tenantRef : tenantRef?.id;
 
   if (!tenantId) {
     throw new AppError(
@@ -25,6 +25,6 @@ export async function verifyWorkspaceSession(req: Request): Promise<string> {
       'medium'
     );
   }
-  
+
   return String(tenantId);
 }

@@ -107,10 +107,10 @@
 
 ### Implementation for User Story 3
 
-- [ ] T039 [US3] Add format validation to `src/core/env.ts` for URL-type variables (APP_URL, DATABASE_URL, R2_ENDPOINT) — reject malformed URLs with specific error messages
-- [ ] T040 [US3] Add minimum-length validation to `src/core/env.ts` for secret-type variables (PAYLOAD_SECRET ≥ 32 chars) — reject short secrets with specific error messages
-- [ ] T041 [US3] Add optional variable support to `src/core/env.ts` for Phase 2+ variables (OPENAI_API_KEY, QSTASH_TOKEN, WAHA_BASE_URL, etc.) — validate only when present, use defaults when absent
-- [ ] T042 [US3] Verify fail-fast behavior: remove each required variable one at a time and confirm the app refuses to start with a clear message naming the missing variable
+- [X] T039 [US3] Add format validation to `src/core/env.ts` for URL-type variables (APP_URL, DATABASE_URL, R2_ENDPOINT) — reject malformed URLs with specific error messages
+- [X] T040 [US3] Add minimum-length validation to `src/core/env.ts` for secret-type variables (PAYLOAD_SECRET ≥ 32 chars) — reject short secrets with specific error messages
+- [X] T041 [US3] Add optional variable support to `src/core/env.ts` for Phase 2+ variables (OPENAI_API_KEY, QSTASH_TOKEN, WAHA_BASE_URL, etc.) — validate only when present, use defaults when absent
+- [X] T042 [US3] Verify fail-fast behavior: remove each required variable one at a time and confirm the app refuses to start with a clear message naming the missing variable
 
 **Checkpoint**: User Story 3 complete — env validation is bulletproof and informative.
 
@@ -124,8 +124,8 @@
 
 ### Implementation for User Story 4
 
-- [ ] T043 [US4] Run `pnpm payload migrate` and verify the pgvector extension migration executes successfully — confirm by querying `SELECT * FROM pg_extension WHERE extname = 'vector'`
-- [ ] T044 [US4] Verify R2 storage adapter is loaded by Payload at boot — confirm via startup logs that storage-s3 plugin is registered with the R2 endpoint
+- [X] T043 [US4] Run `pnpm payload migrate` and verify the pgvector extension migration executes successfully — confirm by querying `SELECT * FROM pg_extension WHERE extname = 'vector'`
+- [X] T044 [US4] Verify R2 storage adapter is loaded by Payload at boot — confirm via startup logs that storage-s3 plugin is registered with the R2 endpoint
 
 **Checkpoint**: User Story 4 complete — database and file storage are verified and operational.
 

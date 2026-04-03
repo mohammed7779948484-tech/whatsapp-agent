@@ -1,10 +1,12 @@
 import type { Payload, Where } from 'payload';
-import type { User } from '@/payload-types';
+import type { Config, User } from '@/payload-types';
+
+type CollectionSlug = keyof Config['collections'];
 
 interface TenantContextOptions {
   payload: Payload;
   user: User;
-  collection: string;
+  collection: CollectionSlug;
   where?: Where;
 }
 
@@ -14,7 +16,7 @@ export async function withTenantContext<T = unknown>(
   const { payload, user, collection, where } = options;
 
   const tenantRef = user.tenants?.[0]?.tenant;
-  const tenantId = typeof tenantRef === 'string' ? tenantRef : tenantRef?.id;
+  const tenantId = typeof tenantRef === 'number' ? tenantRef : tenantRef?.id;
 
   if (!tenantId) {
     throw new Error('User does not have an associated workspace');

@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload';
-import { DEFAULT_WORKSPACE_STATUS } from '@/shared/types/workspace-status';
+import { DEFAULT_WORKSPACE_STATUS } from '../../shared/types/workspace-status.ts';
 
 export const Workspaces: CollectionConfig = {
   slug: 'workspaces',
