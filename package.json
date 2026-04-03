@@ -9,6 +9,7 @@
     "lint": "next lint .",
     "typecheck": "tsc --noEmit",
     "payload": "payload",
+    "seed:admin": "node --env-file=.env scripts/seed-admin.mjs",
     "test": "vitest run",
     "test:unit": "vitest run --dir tests/unit",
     "test:integration": "vitest run --dir tests/integration",

@@ -4,7 +4,10 @@ out/
 build/
 dist/
 coverage/
+.git/
+Dockerfile*
+.dockerignore
 .DS_Store
-*.log
+*.log*
 .env*
 !.env.example

@@ -74,9 +74,9 @@
 
 ### Implementation for User Story 1
 
-- [ ] T032 [US1] Verify the application boots locally by running `pnpm dev` — confirm no startup errors, root URL responds, and `/admin` loads the Payload Admin login screen
-- [ ] T033 [US1] Create the `README.md` at the project root with setup instructions matching `quickstart.md` (clone, install, configure .env, migrate, seed, start, verify)
-- [ ] T034 [US1] Create the `pnpm seed:admin` script (or equivalent) that creates the first admin user for local development — document in `README.md`
+- [X] T032 [US1] Verify the application boots locally by running `pnpm dev` — confirm no startup errors, root URL responds, and `/admin` loads the Payload Admin login screen
+- [X] T033 [US1] Create the `README.md` at the project root with setup instructions matching `quickstart.md` (clone, install, configure .env, migrate, seed, start, verify)
+- [X] T034 [US1] Create the `pnpm seed:admin` script (or equivalent) that creates the first admin user for local development — document in `README.md`
 
 **Checkpoint**: User Story 1 complete — a developer can go from clone to running app in under 5 minutes.
 
@@ -90,10 +90,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T035 [US2] Create the login page at `src/app/(auth)/login/page.tsx` with email/password form, error messaging, and redirect-on-success to `/dashboard`
-- [ ] T036 [US2] Create the protected dashboard layout at `src/app/(dashboard)/layout.tsx` — verify owner session on server side, redirect to `/login` if unauthenticated
-- [ ] T037 [US2] Create the dashboard placeholder page at `src/app/(dashboard)/dashboard/page.tsx` — display the logged-in owner's email and workspace name
-- [ ] T038 [US2] Verify end-to-end auth flow: admin creates owner in Payload Admin → owner logs in at `/login` → redirected to `/dashboard` → shows placeholder content → logout works
+- [X] T035 [US2] Create the login page at `src/app/(auth)/login/page.tsx` with email/password form, error messaging, and redirect-on-success to `/dashboard`
+- [X] T036 [US2] Create the protected dashboard layout at `src/app/(dashboard)/layout.tsx` — verify owner session on server side, redirect to `/login` if unauthenticated
+- [X] T037 [US2] Create the dashboard placeholder page at `src/app/(dashboard)/dashboard/page.tsx` — display the logged-in owner's email and workspace name
+- [X] T038 [US2] Verify end-to-end auth flow: admin creates owner in Payload Admin → owner logs in at `/login` → redirected to `/dashboard` → shows placeholder content → logout works
 
 **Checkpoint**: User Story 2 complete — admin can onboard a customer owner, and the owner can authenticate and reach their dashboard.
 
