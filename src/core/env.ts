@@ -3,20 +3,19 @@ const DEFAULT_R2_REGION = 'auto';
 const DEFAULT_RETENTION_DAYS = 30;
 const DEFAULT_MAX_UPLOAD_MB = 5;
 
-const REQUIRED_ENV_VARS = [
-  'APP_URL',
-  'PAYLOAD_SECRET',
-  'DATABASE_URL',
-  'R2_ENDPOINT',
-  'R2_ACCESS_KEY_ID',
-  'R2_SECRET_ACCESS_KEY',
-  'R2_BUCKET',
-] as const;
+type RequiredEnvVar =
+  | 'APP_URL'
+  | 'PAYLOAD_SECRET'
+  | 'DATABASE_URL'
+  | 'R2_ENDPOINT'
+  | 'R2_ACCESS_KEY_ID'
+  | 'R2_SECRET_ACCESS_KEY'
+  | 'R2_BUCKET';
 
 const VALID_NODE_ENVS = ['development', 'production', 'test'] as const;
 type NodeEnv = (typeof VALID_NODE_ENVS)[number];
 
-function getRequiredVariable(varName: (typeof REQUIRED_ENV_VARS)[number]): string {
+function getRequiredVariable(varName: RequiredEnvVar): string {
   const value = process.env[varName];
   if (!value) {
     throw new Error(`Missing required environment variable: ${varName}`);

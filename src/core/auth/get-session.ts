@@ -23,7 +23,7 @@ export async function getSession(req: Request): Promise<User | null> {
     }
     
     return null;
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }
