@@ -6,7 +6,8 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { Users, Workspaces } from './collections';
+import { Users } from './collections/users.collection';
+import { Workspaces } from './collections/workspaces.collection';
 import { env } from '../core/env';
 
 const filename = fileURLToPath(import.meta.url);
