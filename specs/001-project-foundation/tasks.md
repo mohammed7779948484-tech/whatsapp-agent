@@ -139,10 +139,10 @@
 
 ### Implementation for User Story 5
 
-- [ ] T045 [US5] Verify the multi-tenant plugin loads without errors at boot — confirm tenant-aware UI elements are visible in the Payload Admin panel
-- [ ] T046 [US5] Create a workspace via the admin panel and verify it is listed as a selectable tenant context
-- [ ] T047 [US5] Create an owner user, assign them a workspace, and verify the plugin-managed tenants array on the user record contains exactly one workspace reference
-- [ ] T048 [US5] Verify the `maxRows: 1` constraint on the tenants array for owner users — attempt to add a second workspace and confirm it is rejected or not allowed
+- [X] T045 [US5] Verify the multi-tenant plugin loads without errors at boot — confirm tenant-aware UI elements are visible in the Payload Admin panel
+- [X] T046 [US5] Create a workspace via the admin panel and verify it is listed as a selectable tenant context
+- [X] T047 [US5] Create an owner user, assign them a workspace, and verify the plugin-managed tenants array on the user record contains exactly one workspace reference
+- [X] T048 [US5] Verify the `maxRows: 1` constraint on the tenants array for owner users — attempt to add a second workspace and confirm it is rejected or not allowed
 
 **Checkpoint**: User Story 5 complete — tenant isolation is configured and verified at the plugin level.
 
@@ -156,9 +156,9 @@
 
 ### Implementation for User Story 6
 
-- [ ] T049 [P] [US6] Verify `.specify/memory/constitution.md` exists and contains version 1.2.0 content
-- [ ] T050 [P] [US6] Verify `.specify/memory/standards/feature-template.md` exists and is non-empty
-- [ ] T051 [P] [US6] Verify `.specify/memory/standards/module-template.md` exists and is non-empty
+- [X] T049 [P] [US6] Verify `.specify/memory/constitution.md` exists and contains version 1.2.0 content
+- [X] T050 [P] [US6] Verify `.specify/memory/standards/feature-template.md` exists and is non-empty
+- [X] T051 [P] [US6] Verify `.specify/memory/standards/module-template.md` exists and is non-empty
 
 **Checkpoint**: User Story 6 complete — governance files are present and versioned.
 

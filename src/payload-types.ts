@@ -125,6 +125,9 @@ export interface User {
   id: number;
   tenant?: (number | null) | Workspace;
   role: 'admin' | 'owner';
+  /**
+   * Assign exactly one workspace to each owner account.
+   */
   tenants?:
     | {
         tenant: number | Workspace;
