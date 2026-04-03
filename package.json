@@ -9,6 +9,7 @@
     "lint": "next lint .",
     "typecheck": "tsc --noEmit",
     "payload": "payload",
+    "seed:admin": "node --env-file=.env scripts/seed-admin.mjs",
     "test": "vitest run",
     "test:unit": "vitest run --dir tests/unit",
     "test:integration": "vitest run --dir tests/integration",
@@ -24,8 +25,8 @@
     "@payloadcms/storage-s3": "3.79.1",
     "@payloadcms/plugin-multi-tenant": "3.79.1",
     "@payloadcms/richtext-lexical": "3.79.1",
-    "tailwindcss": "4.0.0",
-    "@tailwindcss/postcss": "4.0.0"
+    "tailwindcss": "^3.4.17",
+    "autoprefixer": "^10.4.20"
   },
   "devDependencies": {
     "typescript": "5.8.3",

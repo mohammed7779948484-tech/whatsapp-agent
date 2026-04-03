@@ -2,13 +2,14 @@ import { buildConfig } from 'payload';
 import { postgresAdapter } from '@payloadcms/db-postgres';
 import { s3Storage } from '@payloadcms/storage-s3';
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant';
-import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { Users } from './collections/users.collection';
-import { Workspaces } from './collections/workspaces.collection';
-import { env } from '../core/env';
+import type { User } from '@/payload-types';
+
+import { Users } from './collections/users.collection.ts';
+import { Workspaces } from './collections/workspaces.collection.ts';
+import { env } from '../core/env.ts';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -21,12 +22,12 @@ export default buildConfig({
     },
   },
   collections: [Users, Workspaces],
-  editor: lexicalEditor(),
   secret: env.PAYLOAD_SECRET,
   typescript: {
     outputFile: path.resolve(dirname, '../payload-types.ts'),
   },
   db: postgresAdapter({
+    migrationDir: path.resolve(dirname, 'migrations'),
     pool: {
       connectionString: env.DATABASE_URL,
     },
@@ -46,6 +47,10 @@ export default buildConfig({
     }),
     multiTenantPlugin({
       tenantsSlug: 'workspaces',
+      tenantsArrayField: {
+        includeDefaultField: false,
+      },
+      userHasAccessToAllTenants: (user) => (user as User).role === 'admin',
       collections: {
         users: {},
       },

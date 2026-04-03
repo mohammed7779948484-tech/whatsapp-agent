@@ -6,7 +6,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default [
   {
-    ignores: ['node_modules/**', '.next/**', 'dist/**', 'build/**', 'coverage/**', 'payload-types.ts'],
+    ignores: ['node_modules/**', '.next/**', 'dist/**', 'build/**', 'coverage/**', '**/*.min.js', 'payload-types.ts'],
   },
   ...eslintConfigNext,
   {
