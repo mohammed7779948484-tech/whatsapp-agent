@@ -39,28 +39,28 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T010 Create the environment validation module with fail-fast behavior in `src/core/env.ts` — validate all required variables (APP_URL, PAYLOAD_SECRET, DATABASE_URL, R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET) at import time and export a typed config object
-- [ ] T011 [P] Create the AppError class in `src/core/errors/app-error.ts` and error code constants in `src/core/errors/error-codes.ts`
-- [ ] T012 [P] Create the structured logger in `src/core/logger/logger.ts` with barrel export in `src/core/logger/index.ts`
-- [ ] T013 [P] Create the workspace status type union (active, paused, disabled) in `src/shared/types/workspace-status.ts`
-- [ ] T014 [P] Create the action result type in `src/shared/types/action-result.ts`
-- [ ] T015 [P] Create the invariant assertion helper in `src/shared/lib/invariant.ts` and safe JSON parser in `src/shared/lib/safe-json.ts`
-- [ ] T016 Create the Users collection with email, role (admin/owner), and Payload built-in auth (password, salt, hash) in `src/payload/collections/users.collection.ts` — set session cookie maxAge to 86400 (24 hours), restrict admin panel access to `role === 'admin'`
-- [ ] T017 Create the Workspaces collection with name, slug (unique), and status (default: active) in `src/payload/collections/workspaces.collection.ts`
-- [ ] T018 Create the collection barrel export in `src/payload/collections/index.ts` exporting Users and Workspaces
-- [ ] T019 Create admin access control function in `src/payload/access/is-admin.access.ts` checking `user.role === 'admin'`
-- [ ] T020 [P] Create owner access control function in `src/payload/access/is-owner.access.ts` checking `user.role === 'owner'`
-- [ ] T021 Create the Payload singleton accessor in `src/payload/lib/get-payload.ts`
-- [ ] T022 Create the tenant-scoped operation helper in `src/payload/lib/with-tenant-context.ts` enforcing `overrideAccess: false` on tenant queries
-- [ ] T023 Create a Payload migration to enable pgvector (`CREATE EXTENSION IF NOT EXISTS vector`) in `src/payload/migrations/`
-- [ ] T024 Create the root layout in `src/app/layout.tsx` with HTML structure, font loading, and metadata
-- [ ] T025 [P] Create the client providers wrapper in `src/app/providers.tsx`
-- [ ] T026 Create the Payload Admin Panel catch-all route in `src/app/(payload)/admin/[[...segments]]/page.tsx`
-- [ ] T027 Create `proxy.ts` at the project root exporting the `proxy` function — protect `/admin` from non-admin access, pass all other routes through
-- [ ] T028 Create auth session helpers: `src/core/auth/get-session.ts`, `src/core/auth/session-cookie.ts`, `src/core/auth/dal.ts`
-- [ ] T029 Create auth guard helpers: `src/core/auth/require-owner-session.ts` (verifies role=owner + active session) and `src/core/auth/verify-workspace-session.ts` (extracts single workspace from tenants array)
-- [ ] T030 Create the auto-generated Payload types file at `src/payload-types.ts` by running `pnpm payload generate:types`
-- [ ] T031 Create the feature registry barrel export in `src/features/_registry/index.ts` and feature config types in `src/features/_registry/types.ts`
+- [X] T010 Create the environment validation module with fail-fast behavior in `src/core/env.ts` — validate all required variables (APP_URL, PAYLOAD_SECRET, DATABASE_URL, R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET) at import time and export a typed config object
+- [X] T011 [P] Create the AppError class in `src/core/errors/app-error.ts` and error code constants in `src/core/errors/error-codes.ts`
+- [X] T012 [P] Create the structured logger in `src/core/logger/logger.ts` with barrel export in `src/core/logger/index.ts`
+- [X] T013 [P] Create the workspace status type union (active, paused, disabled) in `src/shared/types/workspace-status.ts`
+- [X] T014 [P] Create the action result type in `src/shared/types/action-result.ts`
+- [X] T015 [P] Create the invariant assertion helper in `src/shared/lib/invariant.ts` and safe JSON parser in `src/shared/lib/safe-json.ts`
+- [X] T016 Create the Users collection with email, role (admin/owner), and Payload built-in auth (password, salt, hash) in `src/payload/collections/users.collection.ts` — set session cookie maxAge to 86400 (24 hours), restrict admin panel access to `role === 'admin'`
+- [X] T017 Create the Workspaces collection with name, slug (unique), and status (default: active) in `src/payload/collections/workspaces.collection.ts`
+- [X] T018 Create the collection barrel export in `src/payload/collections/index.ts` exporting Users and Workspaces
+- [X] T019 Create admin access control function in `src/payload/access/is-admin.access.ts` checking `user.role === 'admin'`
+- [X] T020 [P] Create owner access control function in `src/payload/access/is-owner.access.ts` checking `user.role === 'owner'`
+- [X] T021 Create the Payload singleton accessor in `src/payload/lib/get-payload.ts`
+- [X] T022 Create the tenant-scoped operation helper in `src/payload/lib/with-tenant-context.ts` enforcing `overrideAccess: false` on tenant queries
+- [X] T023 Create a Payload migration to enable pgvector (`CREATE EXTENSION IF NOT EXISTS vector`) in `src/payload/migrations/`
+- [X] T024 Create the root layout in `src/app/layout.tsx` with HTML structure, font loading, and metadata
+- [X] T025 [P] Create the client providers wrapper in `src/app/providers.tsx`
+- [X] T026 Create the Payload Admin Panel catch-all route in `src/app/(payload)/admin/[[...segments]]/page.tsx`
+- [X] T027 Create `proxy.ts` at the project root exporting the `proxy` function — protect `/admin` from non-admin access, pass all other routes through
+- [X] T028 Create auth session helpers: `src/core/auth/get-session.ts`, `src/core/auth/session-cookie.ts`, `src/core/auth/dal.ts`
+- [X] T029 Create auth guard helpers: `src/core/auth/require-owner-session.ts` (verifies role=owner + active session) and `src/core/auth/verify-workspace-session.ts` (extracts single workspace from tenants array)
+- [X] T030 Create the auto-generated Payload types file at `src/payload-types.ts` by running `pnpm payload generate:types`
+- [X] T031 Create the feature registry barrel export in `src/features/_registry/index.ts` and feature config types in `src/features/_registry/types.ts`
 
 **Checkpoint**: Foundation ready — app boots, Payload Admin accessible, Users and Workspaces collections exist, env validation enforced, auth helpers available. User story implementation can now begin.
 
