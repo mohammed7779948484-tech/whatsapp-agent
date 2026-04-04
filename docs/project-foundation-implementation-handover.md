@@ -43,6 +43,7 @@ Primary implementation areas reviewed during the audit:
 - Auth and infrastructure helpers: `src/core/**`
 - Shared primitives and types: `src/shared/**`
 - Feature registry and login feature: `src/features/**`
+- Widgets and reusable UI composition: `src/widgets/**`
 - Root configuration: `package.json`, `tsconfig.json`, `eslint.config.mjs`, `postcss.config.mjs`, `next.config.ts`, `proxy.ts`
 - Docs and onboarding assets: `README.md`, `docs/onboarding-checklist.md`
 - Test and validation config: `vitest.config.ts`, `playwright.config.ts`, `tests/**`
@@ -214,7 +215,6 @@ project-root/
 │   │   │   │       └── page.tsx
 │   │   │   ├── (dashboard)/
 │   │   │   │   ├── dashboard/
-│   │   │   │   │   ├── logout-button.tsx
 │   │   │   │   │   └── page.tsx
 │   │   │   │   └── layout.tsx
 │   │   │   └── page.tsx
@@ -288,6 +288,10 @@ project-root/
 │   │       ├── types.ts
 │   │       └── ui/
 │   │           └── LoginForm.tsx
+│   ├── widgets/
+│   │   └── owner-logout/
+│   │       ├── index.ts
+│   │       └── OwnerLogoutButton.tsx
 │   ├── payload/
 │   │   ├── access/
 │   │   │   ├── can-read-own-workspace.access.ts
@@ -407,6 +411,7 @@ File: `src/payload/collections/workspaces.collection.ts`
 - Placeholder response helper -> `src/app/api/_lib/not-implemented.ts`
 - Payload singleton -> `src/payload/lib/get-payload.ts`
 - Tenant helper -> `src/payload/lib/with-tenant-context.ts`
+- Owner logout widget -> `src/widgets/owner-logout/OwnerLogoutButton.tsx`
 - Proxy boundary -> `proxy.ts`
 
 ## 9. Core business logic and control flow
@@ -425,6 +430,7 @@ File: `src/payload/collections/workspaces.collection.ts`
 3. On success, Payload issues the auth cookie.
 4. Client redirects to `/dashboard`.
 5. Dashboard layout resolves the cookie, validates owner role, validates the workspace assignment, and renders owner data.
+6. The sign-out button is rendered from `src/widgets/owner-logout/OwnerLogoutButton.tsx` so reusable UI stays outside the route folder.
 
 ### Dashboard protection flow
 
@@ -503,6 +509,7 @@ Deferred integrations remain scaffolded only:
 - Reverted unnecessary custom route dispatch logic from `src/app/(payload)/api/[...slug]/route.ts`.
 - Consolidated root app shell into `src/app/layout.tsx` and `src/app/providers.tsx`.
 - Removed duplicate root page/layout/provider artifacts that caused ownership ambiguity.
+- Moved the dashboard logout button out of `src/app/(frontend)/(dashboard)/dashboard/` into `src/widgets/owner-logout/` to match the approved frontend structure.
 - Brought Tailwind/PostCSS onto the constitution-aligned v4 setup.
 - Added a proper `auth-login` feature surface with public exports and required template files.
 - Added admin-panel access enforcement through Payload collection admin access.
@@ -522,6 +529,7 @@ Deferred integrations remain scaffolded only:
 - Governance templates under `.specify/memory/standards/` contain some stale example references; they were verified for presence and content, but not fully rewritten in this audit because the foundation spec only required existence/versioning.
 - The constitution still contains a ratification date TODO.
 - There is an unrelated local workspace deletion outside this audit scope: `.agent/rules/specify-rules.md`.
+- There is no `src/app/(frontend)/(dashboard)/_lib` directory in the current codebase, so no removal was needed there.
 
 ## 16. Spec closure confirmation
 

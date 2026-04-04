@@ -1,7 +1,6 @@
 import { getOwnerDashboardSession } from '@/core/auth/get-owner-dashboard-session';
 import { getPayloadClient } from '@/payload/lib/get-payload';
-
-import { LogoutButton } from './logout-button';
+import { OwnerLogoutButton } from '@/widgets/owner-logout';
 
 export default async function DashboardPage() {
   const { user, workspaceId } = await getOwnerDashboardSession();
@@ -19,7 +18,7 @@ export default async function DashboardPage() {
       <div className="mx-auto max-w-3xl rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-2xl font-semibold text-slate-900">Owner dashboard</h1>
-          <LogoutButton />
+          <OwnerLogoutButton />
         </div>
 
         <p className="mt-6 text-sm text-slate-600">Logged in owner</p>
