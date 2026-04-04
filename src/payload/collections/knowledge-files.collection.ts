@@ -1,8 +1,8 @@
 import type { CollectionConfig } from 'payload';
 
-import { workspaceOwnerCrud } from '@/payload/access/workspace-owner-crud.access';
-import { knowledgeFileAfterDelete } from '@/payload/hooks/knowledge-file-after-delete.hook';
-import { knowledgeFileBeforeChange } from '@/payload/hooks/knowledge-file-before-change.hook';
+import { workspaceOwnerCrud } from '../access/workspace-owner-crud.access.ts';
+import { knowledgeFileAfterDelete } from '../hooks/knowledge-file-after-delete.hook.ts';
+import { knowledgeFileBeforeChange } from '../hooks/knowledge-file-before-change.hook.ts';
 
 export const KnowledgeFiles: CollectionConfig = {
   slug: 'knowledge_files',

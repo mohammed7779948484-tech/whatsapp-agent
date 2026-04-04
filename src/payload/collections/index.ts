@@ -1,2 +1,10 @@
-export { Users } from './users.collection';
-export { Workspaces } from './workspaces.collection';
+export { Users } from './users.collection.ts';
+export { Workspaces } from './workspaces.collection.ts';
+export { Agents } from './agents.collection.ts';
+export { WhatsappSessions } from './whatsapp-sessions.collection.ts';
+export { KnowledgeFiles } from './knowledge-files.collection.ts';
+export { KnowledgeChunks } from './knowledge-chunks.collection.ts';
+export { Conversations } from './conversations.collection.ts';
+export { Messages } from './messages.collection.ts';
+export { MessageTraces } from './message-traces.collection.ts';
+export { IngestionJobs } from './ingestion-jobs.collection.ts';

@@ -1,8 +1,8 @@
 import type { Access } from 'payload';
 
-import type { User } from '@/payload-types';
+import type { User } from '../../payload-types.ts';
 
-import { resolveUserWorkspaceId } from './workspace-scope.access';
+import { resolveUserWorkspaceId } from './workspace-scope.access.ts';
 
 interface WorkspaceData {
   workspace?: unknown;

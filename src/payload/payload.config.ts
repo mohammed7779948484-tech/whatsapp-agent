@@ -5,10 +5,20 @@ import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import type { User } from '@/payload-types';
-import { env } from '@/core/env';
-import { Users } from '@/payload/collections/users.collection';
-import { Workspaces } from '@/payload/collections/workspaces.collection';
+import type { User } from '../payload-types.ts';
+import { env } from '../core/env.ts';
+import {
+  Agents,
+  Conversations,
+  IngestionJobs,
+  KnowledgeChunks,
+  KnowledgeFiles,
+  Messages,
+  MessageTraces,
+  Users,
+  WhatsappSessions,
+  Workspaces,
+} from './collections/index.ts';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -20,7 +30,18 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Workspaces],
+  collections: [
+    Users,
+    Workspaces,
+    Agents,
+    WhatsappSessions,
+    KnowledgeFiles,
+    KnowledgeChunks,
+    Conversations,
+    Messages,
+    MessageTraces,
+    IngestionJobs,
+  ],
   secret: env.PAYLOAD_SECRET,
   typescript: {
     outputFile: path.resolve(dirname, '../payload-types.ts'),
@@ -33,7 +54,11 @@ export default buildConfig({
   }),
   plugins: [
     s3Storage({
-      collections: {},
+      collections: {
+        knowledge_files: {
+          prefix: 'knowledge',
+        },
+      },
       bucket: env.R2_BUCKET,
       config: {
         endpoint: env.R2_ENDPOINT,

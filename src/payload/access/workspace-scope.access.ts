@@ -1,6 +1,6 @@
 import type { Access } from 'payload';
 
-import type { User } from '@/payload-types';
+import type { User } from '../../payload-types.ts';
 
 export function resolveUserWorkspaceId(user: User | null): number | null {
   const tenantRef = user?.tenants?.[0]?.tenant;

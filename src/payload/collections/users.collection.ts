@@ -1,11 +1,11 @@
 import type { CollectionConfig } from 'payload';
 import { tenantsArrayField } from '@payloadcms/plugin-multi-tenant/fields';
 
-import type { User } from '@/payload-types';
-import { SESSION_MAX_AGE } from '@/core/auth/constants';
+import type { User } from '../../payload-types.ts';
+import { SESSION_MAX_AGE } from '../../core/auth/constants.ts';
 
-import { isAdmin } from '@/payload/access/is-admin.access';
-import { isAdminOrSelf } from '@/payload/access/is-admin-or-self.access';
+import { isAdmin } from '../access/is-admin.access.ts';
+import { isAdminOrSelf } from '../access/is-admin-or-self.access.ts';
 
 const userTenantsField = tenantsArrayField({
   tenantsCollectionSlug: 'workspaces',

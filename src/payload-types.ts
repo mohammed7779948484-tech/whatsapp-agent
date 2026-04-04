@@ -69,6 +69,14 @@ export interface Config {
   collections: {
     users: User;
     workspaces: Workspace;
+    agents: Agent;
+    whatsapp_sessions: WhatsappSession;
+    knowledge_files: KnowledgeFile;
+    knowledge_chunks: KnowledgeChunk;
+    conversations: Conversation;
+    messages: Message;
+    message_traces: MessageTrace;
+    ingestion_jobs: IngestionJob;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +86,14 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     workspaces: WorkspacesSelect<false> | WorkspacesSelect<true>;
+    agents: AgentsSelect<false> | AgentsSelect<true>;
+    whatsapp_sessions: WhatsappSessionsSelect<false> | WhatsappSessionsSelect<true>;
+    knowledge_files: KnowledgeFilesSelect<false> | KnowledgeFilesSelect<true>;
+    knowledge_chunks: KnowledgeChunksSelect<false> | KnowledgeChunksSelect<true>;
+    conversations: ConversationsSelect<false> | ConversationsSelect<true>;
+    messages: MessagesSelect<false> | MessagesSelect<true>;
+    message_traces: MessageTracesSelect<false> | MessageTracesSelect<true>;
+    ingestion_jobs: IngestionJobsSelect<false> | IngestionJobsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -165,6 +181,170 @@ export interface Workspace {
    */
   slug: string;
   status: 'active' | 'paused' | 'disabled';
+  /**
+   * The owner user assigned to this workspace
+   */
+  owner?: (number | null) | User;
+  /**
+   * Last time knowledge was successfully indexed.
+   */
+  last_knowledge_update_at?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agents".
+ */
+export interface Agent {
+  id: number;
+  workspace: number | Workspace;
+  display_name: string;
+  response_style?: string | null;
+  system_prompt?: string | null;
+  quick_instructions?: string | null;
+  language_preference?: ('ar' | 'en') | null;
+  is_enabled: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "whatsapp_sessions".
+ */
+export interface WhatsappSession {
+  id: number;
+  workspace: number | Workspace;
+  session_name: string;
+  provider_status: 'connected' | 'disconnected' | 'qr_pending' | 'error';
+  qr_code?: string | null;
+  connected_phone?: string | null;
+  last_synced_at?: string | null;
+  last_error?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knowledge_files".
+ */
+export interface KnowledgeFile {
+  id: number;
+  workspace: number | Workspace;
+  mime_type?: string | null;
+  parse_status: 'pending' | 'parsing' | 'parsed' | 'failed';
+  ingestion_status: 'pending' | 'processing' | 'indexed' | 'failed';
+  ingestion_error?: string | null;
+  uploaded_at: string;
+  parsed_at?: string | null;
+  indexed_at?: string | null;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knowledge_chunks".
+ */
+export interface KnowledgeChunk {
+  id: number;
+  workspace: number | Workspace;
+  file: number | KnowledgeFile;
+  chunk_index: number;
+  content: string;
+  content_hash: string;
+  metadata_json?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "conversations".
+ */
+export interface Conversation {
+  id: number;
+  workspace: number | Workspace;
+  remote_jid: string;
+  session_started_at: string;
+  last_message_at: string;
+  status: 'open' | 'closed';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages".
+ */
+export interface Message {
+  id: number;
+  workspace: number | Workspace;
+  conversation: number | Conversation;
+  direction: 'inbound' | 'outbound';
+  provider_message_id?: string | null;
+  text: string;
+  message_type: 'text' | 'image' | 'audio' | 'video' | 'document' | 'other';
+  delivery_status?: ('sent' | 'delivered' | 'read' | 'failed') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "message_traces".
+ */
+export interface MessageTrace {
+  id: number;
+  workspace: number | Workspace;
+  conversation: number | Conversation;
+  inbound_message: number | Message;
+  outbound_message?: (number | null) | Message;
+  prompt_snapshot?: string | null;
+  retrieved_chunks_snapshot?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  model_name?: string | null;
+  used_fallback: boolean;
+  fallback_reason?: string | null;
+  send_status?: ('sent' | 'failed') | null;
+  error_details?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ingestion_jobs".
+ */
+export interface IngestionJob {
+  id: number;
+  workspace: number | Workspace;
+  file: number | KnowledgeFile;
+  stage: 'queued' | 'parsing' | 'chunking' | 'embedding' | 'indexed' | 'failed';
+  attempt_count: number;
+  last_error?: string | null;
+  started_at?: string | null;
+  finished_at?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -199,6 +379,38 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'workspaces';
         value: number | Workspace;
+      } | null)
+    | ({
+        relationTo: 'agents';
+        value: number | Agent;
+      } | null)
+    | ({
+        relationTo: 'whatsapp_sessions';
+        value: number | WhatsappSession;
+      } | null)
+    | ({
+        relationTo: 'knowledge_files';
+        value: number | KnowledgeFile;
+      } | null)
+    | ({
+        relationTo: 'knowledge_chunks';
+        value: number | KnowledgeChunk;
+      } | null)
+    | ({
+        relationTo: 'conversations';
+        value: number | Conversation;
+      } | null)
+    | ({
+        relationTo: 'messages';
+        value: number | Message;
+      } | null)
+    | ({
+        relationTo: 'message_traces';
+        value: number | MessageTrace;
+      } | null)
+    | ({
+        relationTo: 'ingestion_jobs';
+        value: number | IngestionJob;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -280,6 +492,140 @@ export interface WorkspacesSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   status?: T;
+  owner?: T;
+  last_knowledge_update_at?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agents_select".
+ */
+export interface AgentsSelect<T extends boolean = true> {
+  workspace?: T;
+  display_name?: T;
+  response_style?: T;
+  system_prompt?: T;
+  quick_instructions?: T;
+  language_preference?: T;
+  is_enabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "whatsapp_sessions_select".
+ */
+export interface WhatsappSessionsSelect<T extends boolean = true> {
+  workspace?: T;
+  session_name?: T;
+  provider_status?: T;
+  qr_code?: T;
+  connected_phone?: T;
+  last_synced_at?: T;
+  last_error?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knowledge_files_select".
+ */
+export interface KnowledgeFilesSelect<T extends boolean = true> {
+  workspace?: T;
+  mime_type?: T;
+  parse_status?: T;
+  ingestion_status?: T;
+  ingestion_error?: T;
+  uploaded_at?: T;
+  parsed_at?: T;
+  indexed_at?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "knowledge_chunks_select".
+ */
+export interface KnowledgeChunksSelect<T extends boolean = true> {
+  workspace?: T;
+  file?: T;
+  chunk_index?: T;
+  content?: T;
+  content_hash?: T;
+  metadata_json?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "conversations_select".
+ */
+export interface ConversationsSelect<T extends boolean = true> {
+  workspace?: T;
+  remote_jid?: T;
+  session_started_at?: T;
+  last_message_at?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages_select".
+ */
+export interface MessagesSelect<T extends boolean = true> {
+  workspace?: T;
+  conversation?: T;
+  direction?: T;
+  provider_message_id?: T;
+  text?: T;
+  message_type?: T;
+  delivery_status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "message_traces_select".
+ */
+export interface MessageTracesSelect<T extends boolean = true> {
+  workspace?: T;
+  conversation?: T;
+  inbound_message?: T;
+  outbound_message?: T;
+  prompt_snapshot?: T;
+  retrieved_chunks_snapshot?: T;
+  model_name?: T;
+  used_fallback?: T;
+  fallback_reason?: T;
+  send_status?: T;
+  error_details?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ingestion_jobs_select".
+ */
+export interface IngestionJobsSelect<T extends boolean = true> {
+  workspace?: T;
+  file?: T;
+  stage?: T;
+  attempt_count?: T;
+  last_error?: T;
+  started_at?: T;
+  finished_at?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -1,4 +1,4 @@
-import { ErrorCode, type ErrorMetadata, type ErrorSeverity } from './error-codes';
+import { ErrorCode, type ErrorMetadata, type ErrorSeverity } from './error-codes.ts';
 
 export class AppError extends Error {
   public readonly code: ErrorCode;

@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload';
 
-import { isAdmin } from '@/payload/access/is-admin.access';
-import { workspaceScope } from '@/payload/access/workspace-scope.access';
+import { isAdmin } from '../access/is-admin.access.ts';
+import { workspaceScope } from '../access/workspace-scope.access.ts';
 
 export const IngestionJobs: CollectionConfig = {
   slug: 'ingestion_jobs',

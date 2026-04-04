@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload';
 
-import { tracesAdminOnly } from '@/payload/access/traces-admin-only.access';
+import { tracesAdminOnly } from '../access/traces-admin-only.access.ts';
 
 export const MessageTraces: CollectionConfig = {
   slug: 'message_traces',

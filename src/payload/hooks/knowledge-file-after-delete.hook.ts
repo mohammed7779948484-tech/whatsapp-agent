@@ -1,6 +1,6 @@
 import type { CollectionAfterDeleteHook, Payload } from 'payload';
 
-import { logger } from '@/core/logger';
+import { logger } from '../../core/logger/index.ts';
 
 interface PayloadDatabaseExecutor {
   drizzle: unknown;

@@ -1,5 +1,5 @@
 import type { Payload, Where } from 'payload';
-import type { Config, User } from '@/payload-types';
+import type { Config, User } from '../../payload-types.ts';
 
 type CollectionSlug = keyof Config['collections'];
 

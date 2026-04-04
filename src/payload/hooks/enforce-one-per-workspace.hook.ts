@@ -1,7 +1,7 @@
 import type { CollectionBeforeChangeHook } from 'payload';
 
-import { AppError } from '@/core/errors/app-error';
-import { ErrorCode } from '@/core/errors/error-codes';
+import { AppError } from '../../core/errors/app-error.ts';
+import { ErrorCode } from '../../core/errors/error-codes.ts';
 
 type OnePerWorkspaceCollectionSlug = 'agents' | 'whatsapp_sessions';
 

@@ -1,8 +1,11 @@
 import type { CollectionConfig } from 'payload';
 
-import { canReadOwnWorkspace } from '@/payload/access/can-read-own-workspace.access';
-import { isAdmin } from '@/payload/access/is-admin.access';
-import { DEFAULT_WORKSPACE_STATUS } from '@/shared/types/workspace-status';
+import { DEFAULT_WORKSPACE_STATUS } from '../../shared/types/workspace-status.ts';
+
+import { canReadOwnWorkspace } from '../access/can-read-own-workspace.access.ts';
+import { isAdmin } from '../access/is-admin.access.ts';
+import { enforceOneOwnerPerWorkspace } from '../hooks/enforce-one-owner-per-workspace.hook.ts';
+import { workspaceBeforeDelete } from '../hooks/workspace-before-delete.hook.ts';
 
 const WORKSPACE_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -17,6 +20,10 @@ export const Workspaces: CollectionConfig = {
     create: isAdmin,
     update: isAdmin,
     delete: isAdmin,
+  },
+  hooks: {
+    beforeChange: [enforceOneOwnerPerWorkspace],
+    beforeDelete: [workspaceBeforeDelete],
   },
   fields: [
     {

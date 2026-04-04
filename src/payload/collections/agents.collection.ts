@@ -1,9 +1,9 @@
 import type { CollectionConfig } from 'payload';
 
-import { isAdmin } from '@/payload/access/is-admin.access';
-import { workspaceOwnerCrud } from '@/payload/access/workspace-owner-crud.access';
-import { workspaceScope } from '@/payload/access/workspace-scope.access';
-import { enforceOnePerWorkspace } from '@/payload/hooks/enforce-one-per-workspace.hook';
+import { isAdmin } from '../access/is-admin.access.ts';
+import { workspaceOwnerCrud } from '../access/workspace-owner-crud.access.ts';
+import { workspaceScope } from '../access/workspace-scope.access.ts';
+import { enforceOnePerWorkspace } from '../hooks/enforce-one-per-workspace.hook.ts';
 
 export const Agents: CollectionConfig = {
   slug: 'agents',
