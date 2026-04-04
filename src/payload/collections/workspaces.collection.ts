@@ -58,6 +58,22 @@ export const Workspaces: CollectionConfig = {
         position: 'sidebar',
       },
     },
+    {
+      name: 'owner',
+      type: 'relationship',
+      relationTo: 'users',
+      admin: {
+        position: 'sidebar',
+        description: 'The owner user assigned to this workspace',
+      },
+    },
+    {
+      name: 'last_knowledge_update_at',
+      type: 'date',
+      admin: {
+        description: 'Last time knowledge was successfully indexed.',
+      },
+    },
   ],
   timestamps: true,
 };
