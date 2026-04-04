@@ -18,11 +18,13 @@ function createTimeoutPromise(timeoutMs: number) {
 }
 
 async function checkDatabaseReadiness() {
-  const payload = await getPayloadClient();
-  const database = payload.db as unknown as PayloadDatabaseExecutor;
-
   await Promise.race([
-    database.execute({ drizzle: database.drizzle, raw: 'SELECT 1;' }),
+    (async () => {
+      const payload = await getPayloadClient();
+      const database = payload.db as unknown as PayloadDatabaseExecutor;
+
+      await database.execute({ drizzle: database.drizzle, raw: 'SELECT 1;' });
+    })(),
     createTimeoutPromise(DEPENDENCY_TIMEOUT_MS),
   ]);
 }
@@ -41,9 +43,9 @@ export async function GET() {
       },
     });
   } catch (error) {
-    const reason = error instanceof Error ? error.message : 'Unknown database readiness error';
+    const internalReason = error instanceof Error ? error.message : 'Unknown database readiness error';
 
-    logger.error('Database readiness check failed', { reason });
+    logger.error('Database readiness check failed', { reason: internalReason });
 
     return Response.json(
       {
@@ -52,7 +54,7 @@ export async function GET() {
         checks: {
           database: 'unreachable',
         },
-        reason,
+        reason: 'One or more dependencies are not reachable',
       },
       { status: 503 },
     );

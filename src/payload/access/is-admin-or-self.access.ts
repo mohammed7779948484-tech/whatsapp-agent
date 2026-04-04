@@ -2,12 +2,20 @@ import type { Access } from 'payload';
 
 import type { User } from '@/payload-types';
 
-export const isOwner: Access = ({ req }) => {
+export const isAdminOrSelf: Access = ({ req }) => {
   const user = req.user as User | null;
-  
+
   if (!user) {
     return false;
   }
-  
-  return user.role === 'owner';
+
+  if (user.role === 'admin') {
+    return true;
+  }
+
+  return {
+    id: {
+      equals: user.id,
+    },
+  };
 };

@@ -7,13 +7,14 @@ interface TenantContextOptions {
   payload: Payload;
   user: User;
   collection: CollectionSlug;
+  tenantField?: string;
   where?: Where;
 }
 
 export async function withTenantContext<T = unknown>(
   options: TenantContextOptions
 ): Promise<{ docs: T[] }> {
-  const { payload, user, collection, where } = options;
+  const { payload, user, collection, tenantField = 'tenant', where } = options;
 
   const tenantRef = user.tenants?.[0]?.tenant;
   const tenantId = typeof tenantRef === 'number' ? tenantRef : tenantRef?.id;
@@ -22,21 +23,30 @@ export async function withTenantContext<T = unknown>(
     throw new Error('User does not have an associated workspace');
   }
 
-  const tenantWhere: Where = {
-    and: [
-      where || {},
-      {
-        tenants: {
-          contains: tenantId,
-        },
-      },
-    ],
-  };
+  const tenantConstraint: Where =
+    collection === 'workspaces'
+      ? {
+          id: {
+            equals: tenantId,
+          },
+        }
+      : {
+          [tenantField]: {
+            equals: tenantId,
+          },
+        };
+
+  const tenantWhere: Where = where
+    ? {
+        and: [where, tenantConstraint],
+      }
+    : tenantConstraint;
 
   const result = await payload.find({
     collection,
     where: tenantWhere,
     overrideAccess: false,
+    user,
   });
 
   return result as unknown as { docs: T[] };

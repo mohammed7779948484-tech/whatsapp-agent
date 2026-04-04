@@ -33,6 +33,17 @@ function validateUrl(varName: string, value: string): string {
   }
 }
 
+function validateDatabaseUrl(varName: string, value: string): string {
+  const parsed = validateUrl(varName, value);
+  const protocol = new URL(parsed).protocol;
+
+  if (protocol !== 'postgres:' && protocol !== 'postgresql:') {
+    throw new Error(`${varName} must be a valid PostgreSQL URL`);
+  }
+
+  return parsed;
+}
+
 function validateOptionalUrl(varName: string): string | undefined {
   const value = process.env[varName];
   if (!value) {
@@ -94,8 +105,10 @@ function validateEnv() {
     NODE_ENV: validateNodeEnv(),
     APP_URL: appUrl,
     PAYLOAD_SECRET: payloadSecret,
-    DATABASE_URL: validateUrl('DATABASE_URL', getRequiredVariable('DATABASE_URL')),
-    NEON_DATABASE_URL: validateOptionalUrl('NEON_DATABASE_URL'),
+    DATABASE_URL: validateDatabaseUrl('DATABASE_URL', getRequiredVariable('DATABASE_URL')),
+    NEON_DATABASE_URL: process.env.NEON_DATABASE_URL
+      ? validateDatabaseUrl('NEON_DATABASE_URL', process.env.NEON_DATABASE_URL)
+      : undefined,
     R2_ENDPOINT: validateUrl('R2_ENDPOINT', getRequiredVariable('R2_ENDPOINT')),
     R2_REGION: process.env.R2_REGION ?? DEFAULT_R2_REGION,
     R2_ACCESS_KEY_ID: getRequiredVariable('R2_ACCESS_KEY_ID'),

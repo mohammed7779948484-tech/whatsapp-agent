@@ -27,18 +27,3 @@ export async function getSession(req: Request): Promise<User | null> {
     return null;
   }
 }
-
-export function getSessionCookie(): string | null {
-  if (typeof document === 'undefined') {
-    return null;
-  }
-  
-  const cookies = document.cookie.split(';');
-  const sessionCookie = cookies.find(cookie => cookie.trim().startsWith('payload-token='));
-  
-  if (!sessionCookie) {
-    return null;
-  }
-  
-  return sessionCookie.split('=')[1]?.trim() || null;
-}

@@ -1,5 +1,8 @@
-export const SESSION_COOKIE_NAME = 'payload-token';
-export const SESSION_MAX_AGE = 86400; // 24 hours in seconds
+import { env } from '@/core/env';
+
+import { SESSION_MAX_AGE } from './constants';
+
+export { SESSION_COOKIE_NAME, SESSION_MAX_AGE } from './constants';
 
 export interface SessionCookieOptions {
   httpOnly: boolean;
@@ -12,7 +15,7 @@ export interface SessionCookieOptions {
 export function getSessionCookieOptions(): SessionCookieOptions {
   return {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: env.NODE_ENV === 'production',
     sameSite: 'lax',
     maxAge: SESSION_MAX_AGE,
     path: '/',
