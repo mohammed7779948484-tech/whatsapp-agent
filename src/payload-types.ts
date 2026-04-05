@@ -231,7 +231,6 @@ export interface WhatsappSession {
 export interface KnowledgeFile {
   id: number;
   workspace: number | Workspace;
-  mime_type?: string | null;
   parse_status: 'pending' | 'parsing' | 'parsed' | 'failed';
   ingestion_status: 'pending' | 'processing' | 'indexed' | 'failed';
   ingestion_error?: string | null;
@@ -298,7 +297,7 @@ export interface Message {
   conversation: number | Conversation;
   direction: 'inbound' | 'outbound';
   provider_message_id?: string | null;
-  text: string;
+  text?: string | null;
   message_type: 'text' | 'image' | 'audio' | 'video' | 'document' | 'other';
   delivery_status?: ('sent' | 'delivered' | 'read' | 'failed') | null;
   updatedAt: string;
@@ -533,7 +532,6 @@ export interface WhatsappSessionsSelect<T extends boolean = true> {
  */
 export interface KnowledgeFilesSelect<T extends boolean = true> {
   workspace?: T;
-  mime_type?: T;
   parse_status?: T;
   ingestion_status?: T;
   ingestion_error?: T;

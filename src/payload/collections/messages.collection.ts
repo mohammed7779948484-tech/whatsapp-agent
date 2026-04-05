@@ -43,7 +43,20 @@ export const Messages: CollectionConfig = {
     {
       name: 'text',
       type: 'textarea',
-      required: true,
+      validate: (value, { siblingData }) => {
+        const messageType =
+          (siblingData as { message_type?: string } | undefined)?.message_type ?? 'text';
+
+        if (messageType !== 'text') {
+          return true;
+        }
+
+        if (typeof value === 'string' && value.trim().length > 0) {
+          return true;
+        }
+
+        return 'Text content is required when message type is text.';
+      },
     },
     {
       name: 'message_type',

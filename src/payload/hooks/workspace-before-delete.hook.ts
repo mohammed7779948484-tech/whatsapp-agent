@@ -8,6 +8,10 @@ const DEPENDENT_COLLECTIONS = [
   'whatsapp_sessions',
   'knowledge_files',
   'conversations',
+  'messages',
+  'message_traces',
+  'knowledge_chunks',
+  'ingestion_jobs',
 ] as const;
 
 export const workspaceBeforeDelete: CollectionBeforeDeleteHook = async ({ id, req }) => {
@@ -34,7 +38,7 @@ export const workspaceBeforeDelete: CollectionBeforeDeleteHook = async ({ id, re
 
   if (dependencyCounts.some((count) => count.totalDocs > 0)) {
     throw new AppError(
-      'Cannot delete workspace: dependent records exist. Remove all agents, sessions, files, and conversations first.',
+      'Cannot delete workspace: dependent records exist. Remove all related agents, sessions, files, conversations, messages, traces, chunks, and ingestion jobs first.',
       ErrorCode.WORKSPACE_HAS_DEPENDENCIES,
       409
     );

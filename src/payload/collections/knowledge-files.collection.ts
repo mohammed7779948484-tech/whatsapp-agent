@@ -31,18 +31,6 @@ export const KnowledgeFiles: CollectionConfig = {
       required: true,
     },
     {
-      name: 'filename',
-      type: 'text',
-    },
-    {
-      name: 'mime_type',
-      type: 'text',
-    },
-    {
-      name: 'filesize',
-      type: 'number',
-    },
-    {
       name: 'parse_status',
       type: 'select',
       required: true,

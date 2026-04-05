@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 
-const appUrl = process.env.APP_URL || 'http://localhost:3000';
+import { getPayload } from 'payload';
+
+import config from '../src/payload/payload.config.ts';
+
 const adminEmail = process.env.ADMIN_EMAIL;
 const adminPassword = process.env.ADMIN_PASSWORD;
+const bootstrapWorkspaceName = process.env.ADMIN_WORKSPACE_NAME || 'Internal Admin Workspace';
+const bootstrapWorkspaceSlug = process.env.ADMIN_WORKSPACE_SLUG || 'internal-admin-workspace';
 
 if (!adminEmail || !adminPassword) {
   console.error('Missing ADMIN_EMAIL or ADMIN_PASSWORD in environment variables.');
@@ -14,37 +19,68 @@ if (adminPassword.length < 8) {
   process.exit(1);
 }
 
-const endpoint = new URL('/api/users/first-register', appUrl);
+async function ensureWorkspace(payload) {
+  const existingWorkspace = await payload.find({
+    collection: 'workspaces',
+    where: {
+      slug: {
+        equals: bootstrapWorkspaceSlug,
+      },
+    },
+    limit: 1,
+  });
+
+  if (existingWorkspace.docs[0]) {
+    return existingWorkspace.docs[0];
+  }
+
+  return payload.create({
+    collection: 'workspaces',
+    data: {
+      name: bootstrapWorkspaceName,
+      slug: bootstrapWorkspaceSlug,
+      status: 'active',
+    },
+  });
+}
 
 async function main() {
+  const payload = await getPayload({ config });
+
   try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
+    const existingUser = await payload.find({
+      collection: 'users',
+      where: {
+        email: {
+          equals: adminEmail,
+        },
       },
-      body: JSON.stringify({
-        email: adminEmail,
-        password: adminPassword,
-      }),
+      limit: 1,
     });
 
-    const body = await response.json().catch(() => null);
-
-    if (response.status === 403) {
-      console.log('Admin bootstrap already completed. Use the existing admin account to sign in.');
+    if (existingUser.docs[0]) {
+      console.log(`Admin user already exists: ${adminEmail}`);
       return;
     }
 
-    if (!response.ok) {
-      const message = body && typeof body === 'object' && 'message' in body ? body.message : 'Unknown error';
-      throw new Error(`Failed to seed admin user: ${String(message)}`);
-    }
+    const workspace = await ensureWorkspace(payload);
+
+    await payload.create({
+      collection: 'users',
+      data: {
+        email: adminEmail,
+        password: adminPassword,
+        role: 'admin',
+        tenant: workspace.id,
+        tenants: [{ tenant: workspace.id }],
+      },
+    });
 
     console.log(`Admin user ready: ${adminEmail}`);
+    console.log(`Assigned workspace: ${workspace.name} (${workspace.id})`);
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    console.error(endpoint ? `Unable to reach ${endpoint.toString()}: ${message}` : message);
+    console.error(`Failed to seed admin user: ${message}`);
     process.exitCode = 1;
   }
 }

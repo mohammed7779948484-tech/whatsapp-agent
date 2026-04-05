@@ -27,7 +27,7 @@ export default buildConfig({
   admin: {
     user: 'users',
     importMap: {
-      baseDir: path.resolve(dirname),
+      baseDir: path.resolve(dirname, '../app/(payload)'),
     },
   },
   collections: [
@@ -48,6 +48,7 @@ export default buildConfig({
   },
   db: postgresAdapter({
     migrationDir: path.resolve(dirname, 'migrations'),
+    push: env.NODE_ENV !== 'production',
     pool: {
       connectionString: env.DATABASE_URL,
     },

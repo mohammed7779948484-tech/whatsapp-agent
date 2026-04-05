@@ -36,6 +36,11 @@ export const enforceOneOwnerPerWorkspace: CollectionBeforeChangeHook = async ({
     return data;
   }
 
+  const originalWorkspaceId =
+    originalDoc && typeof originalDoc === 'object' && 'id' in originalDoc
+      ? resolveRelationshipId((originalDoc as { id?: unknown }).id)
+      : null;
+
   const existingOwnerWorkspace = await req.payload.find({
     collection: 'workspaces',
     where: {
@@ -45,11 +50,11 @@ export const enforceOneOwnerPerWorkspace: CollectionBeforeChangeHook = async ({
             equals: nextOwnerId,
           },
         },
-        ...(originalDoc && 'id' in originalDoc
+        ...(originalWorkspaceId
           ? [
               {
                 id: {
-                  not_equals: Number((originalDoc as { id?: unknown }).id),
+                  not_equals: originalWorkspaceId,
                 },
               },
             ]
