@@ -1,11 +1,13 @@
 import type { Access } from 'payload';
 
+import type { User } from '@/payload-types';
+
 export const isOwner: Access = ({ req }) => {
-  const user = req.user;
+  const user = req.user as User | null;
   
   if (!user) {
     return false;
   }
   
-  return (user as unknown as { role: string }).role === 'owner';
+  return user.role === 'owner';
 };

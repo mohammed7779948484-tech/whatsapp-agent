@@ -3,20 +3,19 @@ const DEFAULT_R2_REGION = 'auto';
 const DEFAULT_RETENTION_DAYS = 30;
 const DEFAULT_MAX_UPLOAD_MB = 5;
 
-const REQUIRED_ENV_VARS = [
-  'APP_URL',
-  'PAYLOAD_SECRET',
-  'DATABASE_URL',
-  'R2_ENDPOINT',
-  'R2_ACCESS_KEY_ID',
-  'R2_SECRET_ACCESS_KEY',
-  'R2_BUCKET',
-] as const;
+type RequiredEnvVar =
+  | 'APP_URL'
+  | 'PAYLOAD_SECRET'
+  | 'DATABASE_URL'
+  | 'R2_ENDPOINT'
+  | 'R2_ACCESS_KEY_ID'
+  | 'R2_SECRET_ACCESS_KEY'
+  | 'R2_BUCKET';
 
 const VALID_NODE_ENVS = ['development', 'production', 'test'] as const;
 type NodeEnv = (typeof VALID_NODE_ENVS)[number];
 
-function getRequiredVariable(varName: (typeof REQUIRED_ENV_VARS)[number]): string {
+function getRequiredVariable(varName: RequiredEnvVar): string {
   const value = process.env[varName];
   if (!value) {
     throw new Error(`Missing required environment variable: ${varName}`);
@@ -32,6 +31,17 @@ function validateUrl(varName: string, value: string): string {
   } catch {
     throw new Error(`${varName} must be a valid URL`);
   }
+}
+
+function validateDatabaseUrl(varName: string, value: string): string {
+  const parsed = validateUrl(varName, value);
+  const protocol = new URL(parsed).protocol;
+
+  if (protocol !== 'postgres:' && protocol !== 'postgresql:') {
+    throw new Error(`${varName} must be a valid PostgreSQL URL`);
+  }
+
+  return parsed;
 }
 
 function validateOptionalUrl(varName: string): string | undefined {
@@ -95,8 +105,10 @@ function validateEnv() {
     NODE_ENV: validateNodeEnv(),
     APP_URL: appUrl,
     PAYLOAD_SECRET: payloadSecret,
-    DATABASE_URL: validateUrl('DATABASE_URL', getRequiredVariable('DATABASE_URL')),
-    NEON_DATABASE_URL: validateOptionalUrl('NEON_DATABASE_URL'),
+    DATABASE_URL: validateDatabaseUrl('DATABASE_URL', getRequiredVariable('DATABASE_URL')),
+    NEON_DATABASE_URL: process.env.NEON_DATABASE_URL
+      ? validateDatabaseUrl('NEON_DATABASE_URL', process.env.NEON_DATABASE_URL)
+      : undefined,
     R2_ENDPOINT: validateUrl('R2_ENDPOINT', getRequiredVariable('R2_ENDPOINT')),
     R2_REGION: process.env.R2_REGION ?? DEFAULT_R2_REGION,
     R2_ACCESS_KEY_ID: getRequiredVariable('R2_ACCESS_KEY_ID'),

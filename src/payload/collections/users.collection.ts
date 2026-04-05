@@ -1,7 +1,11 @@
 import type { CollectionConfig } from 'payload';
 import { tenantsArrayField } from '@payloadcms/plugin-multi-tenant/fields';
 
-import { isAdmin } from '../access/is-admin.access.ts';
+import type { User } from '@/payload-types';
+import { SESSION_MAX_AGE } from '@/core/auth/constants';
+
+import { isAdmin } from '@/payload/access/is-admin.access';
+import { isAdminOrSelf } from '@/payload/access/is-admin-or-self.access';
 
 const userTenantsField = tenantsArrayField({
   tenantsCollectionSlug: 'workspaces',
@@ -16,12 +20,13 @@ export const Users: CollectionConfig = {
   auth: {
     maxLoginAttempts: 5,
     lockTime: 600000,
-    tokenExpiration: 86400,
+    tokenExpiration: SESSION_MAX_AGE,
   },
   access: {
-    read: isAdmin,
+    admin: ({ req }) => (req.user as User | null)?.role === 'admin',
+    read: isAdminOrSelf,
     create: isAdmin,
-    update: isAdmin,
+    update: isAdminOrSelf,
     delete: isAdmin,
   },
   fields: [
@@ -30,6 +35,10 @@ export const Users: CollectionConfig = {
       type: 'select',
       required: true,
       defaultValue: 'owner',
+      access: {
+        create: ({ req }) => (req.user as User | null)?.role === 'admin',
+        update: ({ req }) => (req.user as User | null)?.role === 'admin',
+      },
       admin: {
         position: 'sidebar',
       },
@@ -42,6 +51,10 @@ export const Users: CollectionConfig = {
       ...userTenantsField,
       label: 'Workspace Access',
       maxRows: 1,
+      access: {
+        create: ({ req }) => (req.user as User | null)?.role === 'admin',
+        update: ({ req }) => (req.user as User | null)?.role === 'admin',
+      },
       admin: {
         position: 'sidebar',
         description: 'Assign exactly one workspace to each owner account.',

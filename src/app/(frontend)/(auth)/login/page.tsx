@@ -1,4 +1,4 @@
-import { LoginForm } from '@/features/auth-login/ui/_components/LoginForm';
+import { LoginForm } from '@/features/auth-login';
 
 type LoginPageProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

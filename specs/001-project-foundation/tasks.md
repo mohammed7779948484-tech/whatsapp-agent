@@ -172,15 +172,15 @@
 
 ### Implementation for User Story 7
 
-- [ ] T052 [US7] Create the liveness endpoint at `src/app/api/health/route.ts` — return `{ status: "ok", timestamp }` with 200
-- [ ] T053 [US7] Create the readiness endpoint at `src/app/api/health/ready/route.ts` — check DB connectivity via lightweight query, return 200 with `{ status: "ready" }` or 503 with `{ status: "unhealthy", reason }` and 5-second timeout per dependency check; verify negative case by temporarily making the DB unreachable and confirming 503 response (covers SC-007)
-- [ ] T054 [P] [US7] Create job route placeholder at `src/app/api/jobs/ingest-parse/route.ts` — POST only, return `{ error: "Not implemented", job: "ingest-parse" }` with 501
-- [ ] T055 [P] [US7] Create job route placeholder at `src/app/api/jobs/ingest-chunk/route.ts` — POST only, return 501
-- [ ] T056 [P] [US7] Create job route placeholder at `src/app/api/jobs/ingest-embed/route.ts` — POST only, return 501
-- [ ] T057 [P] [US7] Create job route placeholder at `src/app/api/jobs/delete-file-artifacts/route.ts` — POST only, return 501
-- [ ] T058 [P] [US7] Create job route placeholder at `src/app/api/jobs/cleanup-retention/route.ts` — POST only, return 501
-- [ ] T059 [P] [US7] Create job route placeholder at `src/app/api/jobs/process-inbound-message/route.ts` — POST only, return 501
-- [ ] T060 [US7] Create the WAHA webhook route placeholder at `src/app/api/webhooks/waha/route.ts` — POST only, return 501
+- [X] T052 [US7] Create the liveness endpoint at `src/app/api/health/route.ts` — return `{ status: "ok", timestamp }` with 200
+- [X] T053 [US7] Create the readiness endpoint at `src/app/api/health/ready/route.ts` — check DB connectivity via lightweight query, return 200 with `{ status: "ready" }` or 503 with `{ status: "unhealthy", reason }` and 5-second timeout per dependency check; verify negative case by temporarily making the DB unreachable and confirming 503 response (covers SC-007)
+- [X] T054 [P] [US7] Create job route placeholder at `src/app/api/jobs/ingest-parse/route.ts` — POST only, return `{ error: "Not implemented", job: "ingest-parse" }` with 501
+- [X] T055 [P] [US7] Create job route placeholder at `src/app/api/jobs/ingest-chunk/route.ts` — POST only, return 501
+- [X] T056 [P] [US7] Create job route placeholder at `src/app/api/jobs/ingest-embed/route.ts` — POST only, return 501
+- [X] T057 [P] [US7] Create job route placeholder at `src/app/api/jobs/delete-file-artifacts/route.ts` — POST only, return 501
+- [X] T058 [P] [US7] Create job route placeholder at `src/app/api/jobs/cleanup-retention/route.ts` — POST only, return 501
+- [X] T059 [P] [US7] Create job route placeholder at `src/app/api/jobs/process-inbound-message/route.ts` — POST only, return 501
+- [X] T060 [US7] Create the WAHA webhook route placeholder at `src/app/api/webhooks/waha/route.ts` — POST only, return 501
 
 **Checkpoint**: User Story 7 complete — all health and job routes respond with correct status codes.
 
@@ -190,12 +190,12 @@
 
 **Purpose**: Final validation, documentation, and cleanup across all stories.
 
-- [ ] T061 Run `pnpm typecheck` and confirm zero errors across the entire codebase
-- [ ] T062 Run `pnpm lint` and confirm zero errors/warnings across the entire codebase
-- [ ] T063 Run `pnpm build` and confirm successful production build
-- [ ] T064 [P] Verify the `.env.example` file contains all required and optional variables with placeholder values and comments
-- [ ] T065 [P] Create `docs/onboarding-checklist.md` documenting the manual admin workflow for onboarding a new customer (create workspace, create owner, assign workspace)
-- [ ] T066 Run the complete quickstart.md validation end-to-end: clone → install → configure → migrate → seed → start → verify all checks pass
+- [X] T061 Run `pnpm typecheck` and confirm zero errors across the entire codebase
+- [X] T062 Run `pnpm lint` and confirm zero errors/warnings across the entire codebase
+- [X] T063 Run `pnpm build` and confirm successful production build
+- [X] T064 [P] Verify the `.env.example` file contains all required and optional variables with placeholder values and comments
+- [X] T065 [P] Create `docs/onboarding-checklist.md` documenting the manual admin workflow for onboarding a new customer (create workspace, create owner, assign workspace)
+- [X] T066 Run the complete quickstart.md validation end-to-end: clone → install → configure → migrate → seed → start → verify all checks pass
 
 ---
 

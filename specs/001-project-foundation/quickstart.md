@@ -51,21 +51,23 @@ This will:
 - Create all Payload collection tables
 - Enable the `pgvector` extension
 
-### 4. Create the first admin user
-
-```bash
-pnpm seed:admin
-```
-
-Or use the Payload Admin panel's first-user registration flow on first boot.
-
-### 5. Start the development server
+### 4. Start the development server
 
 ```bash
 pnpm dev
 ```
 
 The application should start within 30 seconds.
+
+### 5. Create the first admin user
+
+```bash
+pnpm seed:admin
+```
+
+Run this in a second terminal while the app is running. If the admin bootstrap already happened, the script exits successfully and tells you to use the existing account.
+
+Or use the Payload Admin panel's first-user registration flow on first boot.
 
 ### 6. Verify the setup
 
@@ -87,11 +89,8 @@ pnpm typecheck
 # Linting
 pnpm lint
 
-# Unit tests
-pnpm test:unit
-
-# Integration tests
-pnpm test:integration
+# Baseline test suite
+pnpm test
 ```
 
 All should pass with zero errors on a clean setup.

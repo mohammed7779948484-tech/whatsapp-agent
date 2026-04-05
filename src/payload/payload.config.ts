@@ -6,10 +6,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import type { User } from '@/payload-types';
-
-import { Users } from './collections/users.collection.ts';
-import { Workspaces } from './collections/workspaces.collection.ts';
-import { env } from '../core/env.ts';
+import { env } from '@/core/env';
+import { Users } from '@/payload/collections/users.collection';
+import { Workspaces } from '@/payload/collections/workspaces.collection';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);

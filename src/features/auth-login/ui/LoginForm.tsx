@@ -3,14 +3,7 @@
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-type LoginResponse = {
-  errors?: Array<{ message?: string }>;
-  message?: string;
-};
-
-type LoginFormProps = {
-  redirectTarget: string;
-};
+import type { LoginFormProps, LoginResponse } from '../types';
 
 function getErrorMessage(payload: LoginResponse | null): string {
   if (!payload) {

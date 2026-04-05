@@ -58,9 +58,13 @@ pnpm dev
 pnpm seed:admin
 ```
 
+The seed script is idempotent. If an admin already exists, it exits successfully and tells you to reuse the existing account.
+
 6. Verify:
 
 - `http://localhost:3000/` responds
+- `http://localhost:3000/api/health` returns `status: "ok"`
+- `http://localhost:3000/api/health/ready` returns `status: "ready"`
 - `http://localhost:3000/admin` shows Payload login
 - `http://localhost:3000/login` loads owner login page
 
@@ -69,5 +73,6 @@ pnpm seed:admin
 - `pnpm dev` - start development server
 - `pnpm payload migrate` - run Payload migrations
 - `pnpm seed:admin` - create first admin user
+- `pnpm test` - run the Vitest suite
 - `pnpm typecheck` - TypeScript checks
 - `pnpm lint` - lint checks
