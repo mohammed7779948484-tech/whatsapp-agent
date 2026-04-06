@@ -1,5 +1,5 @@
 import type { User } from '@/payload-types';
-import { getPayloadClient } from '@/payload/lib/get-payload';
+import { getPayloadClient } from '@/payload/lib';
 
 export async function getSession(req: Request): Promise<User | null> {
   const authHeader = req.headers.get('authorization');

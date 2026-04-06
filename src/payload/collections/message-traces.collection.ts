@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 
 import { tracesAdminOnly } from '../access/traces-admin-only.access.ts';
+import { validateMessageTraceLinks } from '../hooks/validate-message-trace-links.hook.ts';
 
 export const MessageTraces: CollectionConfig = {
   slug: 'message_traces',
@@ -12,6 +13,9 @@ export const MessageTraces: CollectionConfig = {
     read: tracesAdminOnly,
     update: tracesAdminOnly,
     delete: tracesAdminOnly,
+  },
+  hooks: {
+    beforeChange: [validateMessageTraceLinks],
   },
   fields: [
     {

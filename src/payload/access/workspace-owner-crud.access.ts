@@ -43,7 +43,9 @@ export const workspaceOwnerCrud: Access = ({ req, data, id }) => {
     ? resolveRelationshipId((data as WorkspaceData).workspace)
     : null;
 
-  if (!id) {
+  const isCreateOperation = req.method === 'POST' || Boolean(data);
+
+  if (isCreateOperation && !id) {
     return requestedWorkspaceId === workspaceId;
   }
 

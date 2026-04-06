@@ -1,4 +1,4 @@
-import type { CollectionBeforeChangeHook } from 'payload';
+import type { CollectionBeforeChangeHook, Where } from 'payload';
 
 import { AppError } from '../../core/errors/app-error.ts';
 import { ErrorCode } from '../../core/errors/error-codes.ts';
@@ -7,6 +7,7 @@ type OnePerWorkspaceCollectionSlug = 'agents' | 'whatsapp_sessions';
 
 interface WorkspaceData {
   workspace?: unknown;
+  id?: unknown;
 }
 
 function resolveRelationshipId(value: unknown): number | null {
@@ -25,24 +26,49 @@ function resolveRelationshipId(value: unknown): number | null {
 export const enforceOnePerWorkspace = (
   collectionSlug: OnePerWorkspaceCollectionSlug
 ): CollectionBeforeChangeHook => {
-  return async ({ data, operation, req }) => {
-    if (operation !== 'create') {
+  return async ({ data, operation, originalDoc, req }) => {
+    const incomingWorkspaceId = resolveRelationshipId((data as WorkspaceData | undefined)?.workspace);
+    const originalWorkspaceId = resolveRelationshipId((originalDoc as WorkspaceData | undefined)?.workspace);
+    const originalDocId = resolveRelationshipId((originalDoc as WorkspaceData | undefined)?.id);
+
+    const shouldValidateCreate = operation === 'create';
+    const shouldValidateWorkspaceChange =
+      operation === 'update' && Boolean(incomingWorkspaceId) && incomingWorkspaceId !== originalWorkspaceId;
+
+    if (!shouldValidateCreate && !shouldValidateWorkspaceChange) {
       return data;
     }
 
-    const workspaceId = resolveRelationshipId((data as WorkspaceData | undefined)?.workspace);
+    const workspaceId = incomingWorkspaceId;
 
     if (!workspaceId) {
       return data;
     }
 
+    const where: Where = shouldValidateWorkspaceChange && originalDocId
+      ? {
+          and: [
+            {
+              workspace: {
+                equals: workspaceId,
+              },
+            } as Where,
+            {
+              id: {
+                not_equals: originalDocId,
+              },
+            } as Where,
+          ],
+        }
+      : {
+          workspace: {
+            equals: workspaceId,
+          },
+        };
+
     const existingRecords = await req.payload.find({
       collection: collectionSlug as never,
-      where: {
-        workspace: {
-          equals: workspaceId,
-        },
-      },
+      where,
       limit: 1,
       depth: 0,
       overrideAccess: true,

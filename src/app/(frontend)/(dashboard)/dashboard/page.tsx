@@ -1,5 +1,5 @@
-import { getOwnerDashboardSession } from '@/core/auth/get-owner-dashboard-session';
-import { getPayloadClient } from '@/payload/lib/get-payload';
+import { getOwnerDashboardSession } from '@/core/auth';
+import { getPayloadClient } from '@/payload/lib';
 import { OwnerLogoutButton } from '@/widgets/owner-logout';
 
 export default async function DashboardPage() {

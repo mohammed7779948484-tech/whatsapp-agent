@@ -2,7 +2,7 @@
 
 **Feature Branch**: `002-database-setup`
 **Created**: 2026-04-04
-**Status**: Draft
+**Status**: Implemented
 **Input**: Phase 2 of the master implementation plan — create all tenant-owned Payload collections, access control rules, lifecycle hooks, the pgvector SQL table, invariant enforcement, retention scaffolding, and development seed scripts.
 
 ## Continuity from Phase 1

@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload';
 
 import { isAdmin } from '../access/is-admin.access.ts';
 import { workspaceScope } from '../access/workspace-scope.access.ts';
+import { syncWorkspaceFromRelation } from '../hooks/sync-workspace-from-relation.hook.ts';
 
 export const KnowledgeChunks: CollectionConfig = {
   slug: 'knowledge_chunks',
@@ -13,6 +14,9 @@ export const KnowledgeChunks: CollectionConfig = {
     read: workspaceScope,
     update: isAdmin,
     delete: isAdmin,
+  },
+  hooks: {
+    beforeChange: [syncWorkspaceFromRelation('file', 'knowledge_files')],
   },
   fields: [
     {

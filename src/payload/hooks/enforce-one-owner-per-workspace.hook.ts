@@ -8,7 +8,14 @@ interface WorkspaceLike {
 }
 
 interface WorkspaceData {
+  id?: unknown;
   owner?: unknown;
+}
+
+interface UserRecord {
+  role?: 'admin' | 'owner';
+  tenant?: unknown;
+  tenants?: { tenant?: unknown }[] | null;
 }
 
 function resolveRelationshipId(value: unknown): number | null {
@@ -29,11 +36,31 @@ export const enforceOneOwnerPerWorkspace: CollectionBeforeChangeHook = async ({
   originalDoc,
   req,
 }) => {
+  const workspaceId = resolveRelationshipId((originalDoc as WorkspaceData | undefined)?.id);
   const nextOwnerId = resolveRelationshipId((data as WorkspaceData | undefined)?.owner);
   const currentOwnerId = resolveRelationshipId((originalDoc as WorkspaceData | undefined)?.owner);
 
   if (!nextOwnerId || nextOwnerId === currentOwnerId) {
     return data;
+  }
+
+  const ownerUser = (await req.payload.findByID({
+    collection: 'users',
+    id: nextOwnerId,
+    depth: 0,
+    overrideAccess: true,
+    req,
+  })) as UserRecord;
+
+  const ownerTenantId =
+    resolveRelationshipId(ownerUser.tenant) ?? resolveRelationshipId(ownerUser.tenants?.[0]?.tenant);
+
+  if (ownerUser.role !== 'owner' || (workspaceId && ownerTenantId !== workspaceId)) {
+    throw new AppError(
+      'Workspace owner must be an owner user assigned to this workspace',
+      ErrorCode.OWNER_ALREADY_ASSIGNED,
+      409
+    );
   }
 
   const originalWorkspaceId =

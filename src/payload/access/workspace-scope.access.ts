@@ -2,14 +2,31 @@ import type { Access } from 'payload';
 
 import type { User } from '../../payload-types.ts';
 
-export function resolveUserWorkspaceId(user: User | null): number | null {
-  const tenantRef = user?.tenants?.[0]?.tenant;
-
-  if (typeof tenantRef === 'number') {
-    return tenantRef;
+function resolveWorkspaceRefId(value: unknown): number | null {
+  if (typeof value === 'number') {
+    return value;
   }
 
-  return typeof tenantRef?.id === 'number' ? tenantRef.id : null;
+  if (value && typeof value === 'object' && 'id' in value) {
+    const relationId = (value as { id?: unknown }).id;
+    return typeof relationId === 'number' ? relationId : null;
+  }
+
+  return null;
+}
+
+export function resolveUserWorkspaceId(user: User | null): number | null {
+  const pluginTenantRef = user?.tenant;
+
+  const pluginTenantId = resolveWorkspaceRefId(pluginTenantRef);
+
+  if (pluginTenantId) {
+    return pluginTenantId;
+  }
+
+  const tenantRef = user?.tenants?.[0]?.tenant;
+
+  return resolveWorkspaceRefId(tenantRef);
 }
 
 export const workspaceScope: Access = ({ req }) => {

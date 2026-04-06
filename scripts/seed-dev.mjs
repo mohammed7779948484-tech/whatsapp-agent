@@ -7,44 +7,28 @@ import config from '../src/payload/payload.config.ts';
 const DEV_WORKSPACE_SLUG = 'dev-workspace';
 const DEV_OWNER_EMAIL = 'owner@dev.local';
 const DEV_OWNER_PASSWORD = 'owner-dev-password-123';
+const SAMPLE_KNOWLEDGE_FILE = {
+  data: Buffer.from('sku,name,price\nSKU-1,Sample Product,99\n', 'utf8'),
+  mimetype: 'text/csv',
+  name: 'sample-product-catalog.csv',
+  size: Buffer.byteLength('sku,name,price\nSKU-1,Sample Product,99\n', 'utf8'),
+};
 
 function logStep(message) {
   console.log(`[seed:dev] ${message}`);
 }
 
 async function createKnowledgeFileMetadata(payload, workspaceId) {
-  const now = new Date().toISOString();
-  const database = payload.db;
-
-  await database.execute({
-    drizzle: database.drizzle,
-    raw: `
-      INSERT INTO knowledge_files (
-        workspace_id,
-        mime_type,
-        parse_status,
-        ingestion_status,
-        uploaded_at,
-        prefix,
-        updated_at,
-        created_at,
-        url,
-        filename,
-        filesize
-      ) VALUES (
-        ${workspaceId},
-        'application/pdf',
-        'pending',
-        'pending',
-        '${now}',
-        'knowledge',
-        '${now}',
-        '${now}',
-        '/knowledge/sample-product-catalog.pdf',
-        'sample-product-catalog.pdf',
-        0
-      );
-    `,
+  await payload.create({
+    collection: 'knowledge_files',
+    data: {
+      workspace: workspaceId,
+      parse_status: 'pending',
+      ingestion_status: 'pending',
+      uploaded_at: new Date(),
+    },
+    file: SAMPLE_KNOWLEDGE_FILE,
+    overrideAccess: true,
   });
 }
 

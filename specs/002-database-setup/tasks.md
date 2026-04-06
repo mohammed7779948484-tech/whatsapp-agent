@@ -189,7 +189,7 @@ Do NOT guess Payload collection syntax from memory. Use the local reference file
 
 - [X] T031 [US1] Regenerate Payload types by running `pnpm payload generate:types` — this updates `src/payload-types.ts` with type definitions for all new collections. Verify the generated file includes types for: `Agent`, `WhatsappSession`, `KnowledgeFile`, `KnowledgeChunk`, `Conversation`, `Message`, `MessageTrace`, `IngestionJob`. This task MUST be done after all collections are registered (T020).
 
-- [ ] T032 [US1] Verify the complete admin workflow end-to-end — start the dev server with `pnpm dev`, log into Admin at `/admin`, and verify: (1) all 10 collections appear in the admin sidebar (Users, Workspaces, Agents, WhatsApp Sessions, Knowledge Files, Knowledge Chunks, Conversations, Messages, Message Traces, Ingestion Jobs), (2) create a workspace → succeeds, (3) create an agent for that workspace → succeeds, (4) attempt to create a second agent for the same workspace → rejected with clear error, (5) create a WhatsApp session for the workspace → succeeds, (6) attempt to create a second session for the same workspace → rejected with clear error, (7) the workspace `owner` and `last_knowledge_update_at` fields are visible and editable, (8) assign an owner to the workspace → succeeds, (9) attempt to assign the same owner to a different workspace → rejected with clear error (one-owner-per-workspace invariant).
+- [X] T032 [US1] Verify the complete admin workflow end-to-end — start the dev server with `pnpm dev`, log into Admin at `/admin`, and verify: (1) all 10 collections appear in the admin sidebar (Users, Workspaces, Agents, WhatsApp Sessions, Knowledge Files, Knowledge Chunks, Conversations, Messages, Message Traces, Ingestion Jobs), (2) create a workspace → succeeds, (3) create an agent for that workspace → succeeds, (4) attempt to create a second agent for the same workspace → rejected with clear error, (5) create a WhatsApp session for the workspace → succeeds, (6) attempt to create a second session for the same workspace → rejected with clear error, (7) the workspace `owner` and `last_knowledge_update_at` fields are visible and editable, (8) assign an owner to the workspace → succeeds, (9) attempt to assign the same owner to a different workspace → rejected with clear error (one-owner-per-workspace invariant).
 
 **Checkpoint**: The admin can manage the complete customer data model through the Admin panel. All invariants are enforced.
 
@@ -203,9 +203,9 @@ Do NOT guess Payload collection syntax from memory. Use the local reference file
 
 ### Verification for User Story 4
 
-- [ ] T033 [US4] Verify conversation and message flow in Admin panel — (1) create a conversation linked to a workspace with a remote JID and session timestamps, (2) create an inbound message linked to the conversation, (3) create an outbound message linked to the conversation, (4) create a message trace linked to the conversation and messages with a prompt snapshot and model name, (5) verify all records show the correct workspace relation.
+- [X] T033 [US4] Verify conversation and message flow in Admin panel — (1) create a conversation linked to a workspace with a remote JID and session timestamps, (2) create an inbound message linked to the conversation, (3) create an outbound message linked to the conversation, (4) create a message trace linked to the conversation and messages with a prompt snapshot and model name, (5) verify all records show the correct workspace relation.
 
-- [ ] T034 [US4] Verify message trace admin-only access — (1) log in as the owner user, (2) attempt to access message traces through the customer dashboard or API — verify no traces are returned, (3) log in as admin and verify traces ARE visible.
+- [X] T034 [US4] Verify message trace admin-only access — (1) log in as the owner user, (2) attempt to access message traces through the customer dashboard or API — verify no traces are returned, (3) log in as admin and verify traces ARE visible.
 
 **Checkpoint**: Conversation, message, and trace collections are operational and tenant-scoped with correct admin-only trace visibility.
 
@@ -219,9 +219,9 @@ Do NOT guess Payload collection syntax from memory. Use the local reference file
 - [X] T036 Run `pnpm lint` and confirm zero errors/warnings across the entire codebase
 - [X] T037 Run `pnpm build` and confirm successful production build
 - [X] T038 Run `pnpm payload migrate` and confirm all migrations execute without errors (both `00001_enable_pgvector.ts` and `00002_create_knowledge_vectors.ts`)
-- [ ] T039 Run `pnpm seed:admin` followed by `pnpm seed:dev` on a fresh database and confirm both complete without errors and the seed data is correct (workspace + owner + agent + WhatsApp session + sample knowledge file)
+- [X] T039 Run `pnpm seed:admin` followed by `pnpm seed:dev` on a fresh database and confirm both complete without errors and the seed data is correct (workspace + owner + agent + WhatsApp session + sample knowledge file)
 - [X] T040 [P] Update `.env.example` if any new environment variables were introduced (none expected, but verify)
-- [ ] T041 Run the complete quickstart.md validation from `specs/002-database-setup/quickstart.md` end-to-end — verify all checklist items pass
+- [X] T041 Run the complete quickstart.md validation from `specs/002-database-setup/quickstart.md` end-to-end — verify all checklist items pass
 
 ---
 

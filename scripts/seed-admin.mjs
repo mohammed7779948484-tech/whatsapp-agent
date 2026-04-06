@@ -28,6 +28,7 @@ async function ensureWorkspace(payload) {
       },
     },
     limit: 1,
+    overrideAccess: true,
   });
 
   if (existingWorkspace.docs[0]) {
@@ -41,6 +42,7 @@ async function ensureWorkspace(payload) {
       slug: bootstrapWorkspaceSlug,
       status: 'active',
     },
+    overrideAccess: true,
   });
 }
 
@@ -56,6 +58,7 @@ async function main() {
         },
       },
       limit: 1,
+      overrideAccess: true,
     });
 
     if (existingUser.docs[0]) {
@@ -74,6 +77,7 @@ async function main() {
         tenant: workspace.id,
         tenants: [{ tenant: workspace.id }],
       },
+      overrideAccess: true,
     });
 
     console.log(`Admin user ready: ${adminEmail}`);
@@ -85,4 +89,12 @@ async function main() {
   }
 }
 
-await main();
+main()
+  .then(() => {
+    process.exit(0);
+  })
+  .catch((error) => {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`Failed to seed admin user: ${message}`);
+    process.exit(1);
+  });

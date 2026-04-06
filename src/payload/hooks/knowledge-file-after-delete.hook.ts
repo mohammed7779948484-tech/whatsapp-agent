@@ -38,6 +38,7 @@ export const knowledgeFileAfterDelete: CollectionAfterDeleteHook = async ({ doc,
     },
     overrideAccess: true,
     depth: 0,
+    req,
   });
 
   await deleteKnowledgeVectors(req.payload, fileId);
