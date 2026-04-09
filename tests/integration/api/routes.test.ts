@@ -1,5 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+vi.mock('@/core/env', () => ({
+  env: {
+    WAHA_WEBHOOK_HMAC_SECRET: 'test-secret',
+    WAHA_ALLOWED_IPS: [],
+    ENABLE_WAHA_SANDBOX: true,
+  },
+}));
+
 import { GET as healthGet } from '@/app/api/health/route';
 import { GET as readyGet } from '@/app/api/health/ready/route';
 import { POST as ingestParsePost } from '@/app/api/jobs/ingest-parse/route';
@@ -60,20 +68,27 @@ describe('foundation API routes', () => {
     });
   });
 
-  it('returns placeholder responses for job and webhook routes', async () => {
+  it('returns a placeholder job response and rejects unsigned WAHA webhooks', async () => {
     const jobResponse = await ingestParsePost();
-    const webhookResponse = await wahaWebhookPost();
+    const webhookResponse = await wahaWebhookPost(
+      new Request('http://localhost/api/webhooks/waha', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ event: 'message', session: 'workspace_1', payload: {} }),
+      })
+    );
 
     expect(jobResponse.status).toBe(501);
-    expect(webhookResponse.status).toBe(501);
+    expect(webhookResponse.status).toBe(401);
 
     await expect(jobResponse.json()).resolves.toEqual({
       error: 'Not implemented',
       job: 'ingest-parse',
     });
     await expect(webhookResponse.json()).resolves.toEqual({
-      error: 'Not implemented',
-      job: 'waha-webhook',
+      error: 'Unauthorized',
     });
   });
 });

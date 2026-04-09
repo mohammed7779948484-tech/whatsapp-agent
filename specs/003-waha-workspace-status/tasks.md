@@ -79,7 +79,7 @@
 
 ### Implementation for User Story 4
 
-- [ ] T007 [P] [US4] Create the WAHA module types file at `src/modules/whatsapp/types.ts`. Define the following types based on `specs/003-waha-workspace-status/data-model.md` and `specs/003-waha-workspace-status/contracts/waha-webhook.md`:
+- [X] T007 [P] [US4] Create the WAHA module types file at `src/modules/whatsapp/types.ts`. Define the following types based on `specs/003-waha-workspace-status/data-model.md` and `specs/003-waha-workspace-status/contracts/waha-webhook.md`:
   - `WahaWebhookEventType = 'session.status' | 'message' | 'message.ack'`
   - `WahaSessionStatus = 'STARTING' | 'SCAN_QR_CODE' | 'WORKING' | 'FAILED' | 'STOPPED'`
   - `ProviderStatus = 'connected' | 'disconnected' | 'qr_pending' | 'error'` (matches the `whatsapp_sessions.provider_status` select options)
@@ -89,7 +89,7 @@
   - `ValidateWebhookResult = { valid: true; body: WahaWebhookPayload } | { valid: false; reason: string }`
   Export all types.
 
-- [ ] T008 [P] [US4] Create the WAHA module constants file at `src/modules/whatsapp/constants.ts`. Define:
+- [X] T008 [P] [US4] Create the WAHA module constants file at `src/modules/whatsapp/constants.ts`. Define:
   - `WAHA_STATUS_MAP: Record<WahaSessionStatus, ProviderStatus>` with mappings: `STARTING → disconnected`, `SCAN_QR_CODE → qr_pending`, `WORKING → connected`, `FAILED → error`, `STOPPED → disconnected`.
   - `WAHA_SESSION_NAME_PREFIX = 'workspace_'` — used for session naming and parsing.
   - `WAHA_HMAC_HEADER = 'x-webhook-hmac'` — the header name WAHA sends.
@@ -97,7 +97,7 @@
   - `WAHA_HMAC_ALGORITHM = 'sha512'` — the documented WAHA HMAC algorithm.
   Import types from `./types.ts`.
 
-- [ ] T009 [US4] Create the WAHA webhook validator at `src/modules/whatsapp/validators/validate-waha-webhook.ts`. Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md` and the WAHA skill at `.agents/skills/WAHA/SKILL.md`. Implement two exported functions:
+- [X] T009 [US4] Create the WAHA webhook validator at `src/modules/whatsapp/validators/validate-waha-webhook.ts`. Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md` and the WAHA skill at `.agents/skills/WAHA/SKILL.md`. Implement two exported functions:
 
   **`validateHmac(rawBody: string, hmacHeader: string | null, secret: string, algorithmHeader?: string | null): boolean`**:
   (1) If `hmacHeader` is null/empty, return `false`.
@@ -118,7 +118,7 @@
 
   Import `crypto` from Node.js built-in module.
 
-- [ ] T010 [US4] Replace the WAHA webhook route placeholder at `src/app/api/webhooks/waha/route.ts`. Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md` and the WAHA skill at `.agents/skills/WAHA/SKILL.md`. The current file returns `501 Not Implemented` — replace it entirely with:
+- [X] T010 [US4] Replace the WAHA webhook route placeholder at `src/app/api/webhooks/waha/route.ts`. Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md` and the WAHA skill at `.agents/skills/WAHA/SKILL.md`. The current file returns `501 Not Implemented` — replace it entirely with:
 
   **`POST` handler**:
   (1) Read the raw request body as text: `const rawBody = await request.text()`.
