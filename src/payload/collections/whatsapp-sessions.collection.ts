@@ -11,6 +11,9 @@ export const WhatsappSessions: CollectionConfig = {
     group: 'Tenant Data',
   },
   access: {
+    // Owner-facing WhatsApp Connection flows must go through verified Server Actions and a
+    // narrowly scoped trusted service write path for the already resolved workspace session.
+    // Direct browser/API create/update/delete access remains admin-only.
     create: isAdmin,
     read: workspaceScope,
     update: isAdmin,
