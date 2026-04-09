@@ -152,7 +152,7 @@
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] **Depends on T005A** (the `ErrorCode.SESSION_NOT_FOUND` value must exist before this task). Create the WAHA module service at `src/modules/whatsapp/services/whatsapp.service.ts`. Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md` and its reference files under `.agents/skills/payload/reference/` — especially QUERIES.md for Local API patterns and HOOKS.md for hook behavior. Also read the WAHA skill at `.agents/skills/WAHA/SKILL.md`. Follow the module template at `.specify/memory/standards/module-template.md` exactly.
+- [X] T011 [US1] **Depends on T005A** (the `ErrorCode.SESSION_NOT_FOUND` value must exist before this task). Create the WAHA module service at `src/modules/whatsapp/services/whatsapp.service.ts`. Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md` and its reference files under `.agents/skills/payload/reference/` — especially QUERIES.md for Local API patterns and HOOKS.md for hook behavior. Also read the WAHA skill at `.agents/skills/WAHA/SKILL.md`. Follow the module template at `.specify/memory/standards/module-template.md` exactly.
 
   Implement a class `WhatsAppService` with the following methods:
 
@@ -192,11 +192,11 @@
   (2) Otherwise return `null`.
 
   Import types from `../types.ts`, constants from `../constants.ts`, `createWahaClient` from `@/core/providers/waha-client`, `AppError` and `ErrorCode` from `@/core/errors`, `Logger` from `@/core/logger`, `env` from `@/core/env`, and `getPayloadClient` from `@/payload/lib`. Import `User` and `WhatsappSession` from `@/payload-types`. Do not import `withTenantContext` here — the module owns Payload access internally for these owner-facing methods, so features and app pages never call `getPayloadClient()` directly. Also add a short code comment above the trusted `whatsapp_sessions` write path explaining why direct owner CRUD on the collection remains closed and why these specific writes intentionally use the already verified workspace/session context instead.
-- [ ] T012 [US1] Create the WAHA module barrel export at `src/modules/whatsapp/index.ts`. Export `WhatsAppService` from `./services/whatsapp.service`, all types from `./types`, all constants from `./constants`, and `validateHmac` / `validateIpAllowlist` / `extractClientIp` from `./validators/validate-waha-webhook`. Follow the module template at `.specify/memory/standards/module-template.md`.
+- [X] T012 [US1] Create the WAHA module barrel export at `src/modules/whatsapp/index.ts`. Export `WhatsAppService` from `./services/whatsapp.service`, all types from `./types`, all constants from `./constants`, and `validateHmac` / `validateIpAllowlist` / `extractClientIp` from `./validators/validate-waha-webhook`. Follow the module template at `.specify/memory/standards/module-template.md`.
 
-- [ ] T013 [US1] Create the WAHA module README at `src/modules/whatsapp/README.md`. Follow the module template at `.specify/memory/standards/module-template.md`. Document: purpose (WAHA gateway integration), consumers (`features/whatsapp-connection`, `app/api/webhooks/waha`), public API table (WhatsAppService methods, validator functions, types), dependencies (`core/providers/waha-client`, `core/env`, `core/errors`, `core/logger`).
+- [X] T013 [US1] Create the WAHA module README at `src/modules/whatsapp/README.md`. Follow the module template at `.specify/memory/standards/module-template.md`. Document: purpose (WAHA gateway integration), consumers (`features/whatsapp-connection`, `app/api/webhooks/waha`), public API table (WhatsAppService methods, validator functions, types), dependencies (`core/providers/waha-client`, `core/env`, `core/errors`, `core/logger`).
 
-- [ ] T014 [US1] Create the `whatsapp-connection` feature scaffold. Follow the feature template at `.specify/memory/standards/feature-template.md` exactly. Create these files:
+- [X] T014 [US1] Create the `whatsapp-connection` feature scaffold. Follow the feature template at `.specify/memory/standards/feature-template.md` exactly. Create these files:
 
   **`src/features/whatsapp-connection/feature.config.ts`**: Define `whatsappConnectionConfig: FeatureConfig` with `id: 'whatsapp-connection'`, `name: 'WhatsApp Connection'`, `description: 'Provision and manage WAHA WhatsApp sessions'`, `dependencies: ['modules/whatsapp']`, `enabled: true`.
 
@@ -208,7 +208,7 @@
 
   **`src/features/whatsapp-connection/index.ts`**: Export `WhatsAppConnectionPage` from `./ui/WhatsAppConnectionPage`, export `WhatsAppDashboardSummary` from `./ui/WhatsAppDashboardSummary`, export types from `./types`, and export the config from `./feature.config`.
 
-- [ ] T015 [US1] Create the provision Server Action at `src/features/whatsapp-connection/actions/provision-whatsapp-session.action.ts`. Follow the Server Action template in `.specify/memory/standards/feature-template.md` exactly. Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md` — specifically the Security Pitfalls section about `overrideAccess`.
+- [X] T015 [US1] Create the provision Server Action at `src/features/whatsapp-connection/actions/provision-whatsapp-session.action.ts`. Follow the Server Action template in `.specify/memory/standards/feature-template.md` exactly. Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md` — specifically the Security Pitfalls section about `overrideAccess`.
 
   The action MUST:
   (1) Start with `'use server'` directive.
@@ -219,9 +219,9 @@
 
   Do NOT import from `@/payload/collections/` — the Service handles all DB access.
 
-- [ ] T016 [US1] Create the disconnect Server Action at `src/features/whatsapp-connection/actions/disconnect-whatsapp-session.action.ts`. Same pattern as T015: `'use server'` → call `getOwnerDashboardSession()` (remember: it redirects on failure and otherwise returns `{ user, workspaceId }`) → call `new WhatsAppService().disconnectSession(workspaceId, user)` → return `success(undefined)` or `failure(...)`. Follow the feature template Server Action pattern exactly.
+- [X] T016 [US1] Create the disconnect Server Action at `src/features/whatsapp-connection/actions/disconnect-whatsapp-session.action.ts`. Same pattern as T015: `'use server'` → call `getOwnerDashboardSession()` (remember: it redirects on failure and otherwise returns `{ user, workspaceId }`) → call `new WhatsAppService().disconnectSession(workspaceId, user)` → return `success(undefined)` or `failure(...)`. Follow the feature template Server Action pattern exactly.
 
-- [ ] T017 [US1] Create the WhatsApp session status UI component at `src/features/whatsapp-connection/ui/_components/WhatsAppSessionStatus.tsx`. This is a React Server Component that receives session data as props and renders:
+- [X] T017 [US1] Create the WhatsApp session status UI component at `src/features/whatsapp-connection/ui/_components/WhatsAppSessionStatus.tsx`. This is a React Server Component that receives session data as props and renders:
   - A status badge showing the `provider_status` with appropriate color (from `PROVIDER_STATUS_COLORS`)
   - The connected phone number (if connected)
   - The last synced timestamp (if available)
@@ -229,14 +229,14 @@
   Props type: `{ status: ProviderStatus | null; connectedPhone?: string | null; lastSyncedAt?: string | null; lastError?: string | null }`.
   This component has NO business logic — it is purely presentational.
 
-- [ ] T018 [US1] Create the WhatsApp QR card UI component at `src/features/whatsapp-connection/ui/_components/WhatsAppQrCard.tsx`. This is a Client Component (`'use client'`). It receives `qrCode: string | null` and `providerStatus: ProviderStatus` as props. Render:
+- [X] T018 [US1] Create the WhatsApp QR card UI component at `src/features/whatsapp-connection/ui/_components/WhatsAppQrCard.tsx`. This is a Client Component (`'use client'`). It receives `qrCode: string | null` and `providerStatus: ProviderStatus` as props. Render:
   - If `qrCode` is present and `providerStatus` is `'qr_pending'`, show the QR image via `<img src={`data:image/png;base64,${qrCode}`} />` with appropriate sizing.
   - A "Refresh QR" button that calls the `refreshWhatsappQrAction` Server Action and updates local state.
   - If `providerStatus` is `'connected'`, show a success message instead of QR.
   - If `providerStatus` is `'disconnected'` and no QR, show a prompt to provision.
   - Loading state while the refresh action is pending (use `useTransition` from React).
 
-- [ ] T019 [US1] Create the main WhatsApp Connection page component at `src/features/whatsapp-connection/ui/WhatsAppConnectionPage.tsx`. This is a React Server Component that:
+- [X] T019 [US1] Create the main WhatsApp Connection page component at `src/features/whatsapp-connection/ui/WhatsAppConnectionPage.tsx`. This is a React Server Component that:
   (1) Gets the owner session via `getOwnerDashboardSession()`.
   (2) Calls `new WhatsAppService().getSessionForWorkspace(workspaceId, user)` to load the current session. Do **not** call `getPayloadClient()` inside this feature component — the module must own Payload access.
   (3) Renders `WhatsAppSessionStatus` with the session data.
@@ -245,9 +245,9 @@
   (6) Renders a "Disconnect" button (if session exists) that calls the disconnect action.
   Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md` for Local API query patterns.
 
-- [ ] T020 [US1] Create the WhatsApp connection route page at `src/app/(frontend)/(dashboard)/whatsapp/page.tsx`. This is a thin Next.js page component that imports and renders `WhatsAppConnectionPage` from `@/features/whatsapp-connection`. Add appropriate page metadata (`title: 'WhatsApp Connection'`). The page layout protection is already handled by the dashboard layout at `src/app/(frontend)/(dashboard)/layout.tsx` from Spec 1.
+- [X] T020 [US1] Create the WhatsApp connection route page at `src/app/(frontend)/(dashboard)/whatsapp/page.tsx`. This is a thin Next.js page component that imports and renders `WhatsAppConnectionPage` from `@/features/whatsapp-connection`. Add appropriate page metadata (`title: 'WhatsApp Connection'`). The page layout protection is already handled by the dashboard layout at `src/app/(frontend)/(dashboard)/layout.tsx` from Spec 1.
 
-- [ ] T021 [US1] Register the `whatsapp-connection` feature in the feature registry at `src/features/_registry/index.ts`. Import `whatsappConnectionConfig` from `@/features/whatsapp-connection` and add it to the `featureRegistry` Map alongside the existing `authLoginConfig`, matching the current registry pattern used by `auth-login`.
+- [X] T021 [US1] Register the `whatsapp-connection` feature in the feature registry at `src/features/_registry/index.ts`. Import `whatsappConnectionConfig` from `@/features/whatsapp-connection` and add it to the `featureRegistry` Map alongside the existing `authLoginConfig`, matching the current registry pattern used by `auth-login`.
 
 **Checkpoint**: Owner can provision a WAHA session, see a QR code, and disconnect. The session record is persisted in DB. Webhook route is live with security enforced.
 
@@ -263,7 +263,7 @@
 
 ### Implementation for User Story 2
 
-- [ ] T022 [US2] Create the refresh QR Server Action at `src/features/whatsapp-connection/actions/refresh-whatsapp-qr.action.ts`. Same pattern as T015: `'use server'` → call `getOwnerDashboardSession()` (remember: it redirects on failure and otherwise returns `{ user, workspaceId }`) → call `new WhatsAppService().refreshQrCode(workspaceId, user)` → return `success({ qrCode })` or `failure(...)`. Follow the feature template Server Action pattern exactly.
+- [X] T022 [US2] Create the refresh QR Server Action at `src/features/whatsapp-connection/actions/refresh-whatsapp-qr.action.ts`. Same pattern as T015: `'use server'` → call `getOwnerDashboardSession()` (remember: it redirects on failure and otherwise returns `{ user, workspaceId }`) → call `new WhatsAppService().refreshQrCode(workspaceId, user)` → return `success({ qrCode })` or `failure(...)`. Follow the feature template Server Action pattern exactly.
 
 **Checkpoint**: QR refresh is available. The `WhatsAppQrCard` component (T018) already has the refresh button wired to this action.
 

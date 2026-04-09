@@ -115,7 +115,11 @@ export class WahaClient {
       });
 
       if (!response.ok) {
-        throw new AppError('WAHA request failed', ErrorCode.WAHA_API_ERROR, 502, 'medium');
+        throw new AppError('WAHA request failed', ErrorCode.WAHA_API_ERROR, 502, 'medium', {
+          details: {
+            responseStatus: response.status,
+          },
+        });
       }
 
       if (response.status === 204) {
