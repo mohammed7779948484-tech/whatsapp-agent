@@ -277,16 +277,16 @@
 
 ### Implementation for User Story 3
 
-- [ ] T023 [P] [US3] Create the workspaces module types file at `src/modules/workspaces/types.ts`. Define:
+- [X] T023 [P] [US3] Create the workspaces module types file at `src/modules/workspaces/types.ts`. Define:
   - `WorkspaceGateResult = { allowed: true } | { allowed: false; reason: 'paused' | 'disabled'; replyText: string }`
   This type represents the decision output of the workspace status gate.
   Import `WorkspaceStatus` from `@/shared/types/workspace-status`.
 
-- [ ] T024 [P] [US3] Create the workspaces module constants file at `src/modules/workspaces/constants.ts`. Define any constants needed (can be minimal — the main constants are in `src/shared/types/workspace-status.ts` and `src/shared/lib/system-replies.ts`).
+- [X] T024 [P] [US3] Create the workspaces module constants file at `src/modules/workspaces/constants.ts`. Define any constants needed (can be minimal — the main constants are in `src/shared/types/workspace-status.ts` and `src/shared/lib/system-replies.ts`).
 
-- [ ] T025 [US3] Create the workspace status validator at `src/modules/workspaces/validators/validate-workspace-status.ts`. Export a function `isActiveWorkspace(status: WorkspaceStatus): boolean` that returns `true` only if status is `'active'`. Import `WorkspaceStatus` from `@/shared/types/workspace-status`.
+- [X] T025 [US3] Create the workspace status validator at `src/modules/workspaces/validators/validate-workspace-status.ts`. Export a function `isActiveWorkspace(status: WorkspaceStatus): boolean` that returns `true` only if status is `'active'`. Import `WorkspaceStatus` from `@/shared/types/workspace-status`.
 
-- [ ] T026 [US3] **Depends on T005A** (the `ErrorCode.WORKSPACE_NOT_FOUND` value must exist before this task). Create the workspaces module service at `src/modules/workspaces/services/workspaces.service.ts`. Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md` and its reference files under `.agents/skills/payload/reference/` — especially QUERIES.md for Local API patterns. Follow the module template at `.specify/memory/standards/module-template.md` exactly.
+- [X] T026 [US3] **Depends on T005A** (the `ErrorCode.WORKSPACE_NOT_FOUND` value must exist before this task). Create the workspaces module service at `src/modules/workspaces/services/workspaces.service.ts`. Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md` and its reference files under `.agents/skills/payload/reference/` — especially QUERIES.md for Local API patterns. Follow the module template at `.specify/memory/standards/module-template.md` exactly.
 
   Implement a class `WorkspacesService` with:
 
@@ -312,9 +312,9 @@
 
   Import types from `../types.ts`, `getSystemReply` from `@/shared/lib/system-replies`, `localeFromText` from `@/shared/lib/locale-from-text`, `SupportedLocale` from `@/shared/types/locale`, `AppError` and `ErrorCode` from `@/core/errors`, `Logger` from `@/core/logger`. Import `Workspace`, `User`, `Agent` from `@/payload-types`.
 
-- [ ] T027 [US3] Create the workspaces module barrel export at `src/modules/workspaces/index.ts`. Export `WorkspacesService` from `./services/workspaces.service`, all types from `./types`, `isActiveWorkspace` from `./validators/validate-workspace-status`.
+- [X] T027 [US3] Create the workspaces module barrel export at `src/modules/workspaces/index.ts`. Export `WorkspacesService` from `./services/workspaces.service`, all types from `./types`, `isActiveWorkspace` from `./validators/validate-workspace-status`.
 
-- [ ] T028 [US3] Create the workspaces module README at `src/modules/workspaces/README.md`. Follow the module template. Document: purpose (workspace status gate and owner workspace queries), consumers (`app/api/webhooks/waha`, `features/whatsapp-connection`, future `app/api/jobs/process-inbound-message`), public API table, dependencies.
+- [X] T028 [US3] Create the workspaces module README at `src/modules/workspaces/README.md`. Follow the module template. Document: purpose (workspace status gate and owner workspace queries), consumers (`app/api/webhooks/waha`, `features/whatsapp-connection`, future `app/api/jobs/process-inbound-message`), public API table, dependencies.
 
 **Checkpoint**: The workspace status gate is implemented. When a workspace is paused/disabled, `checkStatusGate` returns the localized unavailability reply. This gate will be wired into the webhook route in T030 and reused later by the Phase 5 message-processing job.
 
@@ -370,7 +370,7 @@
 
 ### Implementation for User Story 7
 
-- [ ] T031 [US7] Export the locale-resolution helper from the workspaces module. The actual `resolveReplyLocale(...)` implementation was created in T026 to avoid duplicate logic. In this task:
+- [X] T031 [US7] Export the locale-resolution helper from the workspaces module. The actual `resolveReplyLocale(...)` implementation was created in T026 to avoid duplicate logic. In this task:
 
   (1) Export `resolveReplyLocale` from `src/modules/workspaces/index.ts`.
   (2) Update the workspaces module README to document the locale chain: `agent.language_preference` → `localeFromText(inboundText)` → Arabic default.
