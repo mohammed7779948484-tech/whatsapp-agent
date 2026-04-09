@@ -330,7 +330,7 @@
 
 ### Implementation for User Story 5
 
-- [ ] T029 [US5] Add the `updateSessionState` method to `WhatsAppService` in `src/modules/whatsapp/services/whatsapp.service.ts`. Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md` — especially the Local API update patterns in reference/QUERIES.md. Do not guess Payload behavior from memory; use the repository Payload skill/reference as the source of truth.
+- [X] T029 [US5] Add the `updateSessionState` method to `WhatsAppService` in `src/modules/whatsapp/services/whatsapp.service.ts`. Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md` — especially the Local API update patterns in reference/QUERIES.md. Do not guess Payload behavior from memory; use the repository Payload skill/reference as the source of truth.
 
   **`async updateSessionState(sessionName: string, wahaStatus: WahaSessionStatus, eventData: Partial<{ qrCode?: string; phone?: string; error?: string }>, payload: PayloadInstance): Promise<void>`**:
   (1) Find the session record by `session_name` via `payload.find({ collection: 'whatsapp_sessions', where: { session_name: { equals: sessionName } }, limit: 1, overrideAccess: true })`.
@@ -344,7 +344,7 @@
   (9) If `providerStatus === 'disconnected'`, clear `connected_phone` and `qr_code` (set to `''`).
   (10) Call `payload.update({ collection: 'whatsapp_sessions', id: session.id, data: updateData, overrideAccess: true })`.
   (11) Log the state transition with Logger.
-- [ ] T030 [US5] Replace the webhook stubs created in T010 with real route handling at `src/app/api/webhooks/waha/route.ts`. Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md`.
+- [X] T030 [US5] Replace the webhook stubs created in T010 with real route handling at `src/app/api/webhooks/waha/route.ts`. Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md`.
 
   The final route behavior must be:
   (1) For `session.status` events: extract `session` and `payload.status`. Resolve the workspace via `resolveWorkspaceIdFromSessionName(session)`. If unknown, log warning and return `200 { status: 'ok', note: 'unknown session' }`.

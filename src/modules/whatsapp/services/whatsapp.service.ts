@@ -6,7 +6,8 @@ import { getPayloadClient } from '@/payload/lib';
 import type { User, WhatsappSession } from '@/payload-types';
 
 import { WAHA_SESSION_NAME_PREFIX } from '../constants';
-import type { ProviderStatus } from '../types';
+import { WAHA_STATUS_MAP } from '../constants';
+import type { ProviderStatus, WahaSessionStatus } from '../types';
 
 type SessionSummary = {
   sessionId: string;
@@ -229,5 +230,81 @@ export class WhatsAppService {
     }
 
     return sessionName.slice(WAHA_SESSION_NAME_PREFIX.length);
+  }
+
+  public async updateSessionState(
+    sessionName: string,
+    wahaStatus: WahaSessionStatus,
+    eventData: Partial<{ qrCode?: string; phone?: string; error?: string }>,
+    payload: Awaited<ReturnType<typeof getPayloadClient>>
+  ): Promise<void> {
+    const sessionResult = await payload.find({
+      collection: 'whatsapp_sessions',
+      where: {
+        session_name: {
+          equals: sessionName,
+        },
+      },
+      limit: 1,
+      overrideAccess: true,
+      depth: 0,
+    });
+
+    const session = sessionResult.docs[0] ?? null;
+
+    if (!session) {
+      this.logger.warn('Received WAHA session event for missing local session', {
+        sessionName,
+      });
+      return;
+    }
+
+    if (!(wahaStatus in WAHA_STATUS_MAP)) {
+      this.logger.warn('Received unsupported WAHA session status', {
+        sessionName,
+        wahaStatus,
+      });
+      return;
+    }
+
+    const providerStatus = WAHA_STATUS_MAP[wahaStatus];
+    const updateData: Partial<WhatsappSession> & {
+      provider_status: ProviderStatus;
+      last_synced_at: string;
+    } = {
+      provider_status: providerStatus,
+      last_synced_at: new Date().toISOString(),
+    };
+
+    if (providerStatus === 'connected' && eventData.phone) {
+      updateData.connected_phone = eventData.phone;
+    }
+
+    if (providerStatus === 'qr_pending' && eventData.qrCode) {
+      updateData.qr_code = eventData.qrCode;
+    }
+
+    if (providerStatus === 'error' && eventData.error) {
+      updateData.last_error = eventData.error;
+    }
+
+    if (providerStatus === 'disconnected') {
+      updateData.connected_phone = null;
+      updateData.qr_code = null;
+    }
+
+    await payload.update({
+      collection: 'whatsapp_sessions',
+      id: session.id,
+      data: updateData,
+      overrideAccess: true,
+      depth: 0,
+    });
+
+    this.logger.info('Updated WhatsApp session state from WAHA event', {
+      sessionName,
+      wahaStatus,
+      providerStatus,
+    });
   }
 }

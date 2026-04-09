@@ -26,6 +26,11 @@ interface WahaClientOptions {
 
 const REQUEST_TIMEOUT_MS = 10_000;
 
+function getResponseStatus(error: AppError): number | null {
+  const value = error.metadata.details?.responseStatus;
+  return typeof value === 'number' ? value : null;
+}
+
 export class WahaClient {
   private readonly baseUrl: string;
   private readonly apiKey: string;
@@ -69,7 +74,7 @@ export class WahaClient {
         method: 'DELETE',
       });
     } catch (error) {
-      if (error instanceof AppError && error.statusCode === 404) {
+      if (error instanceof AppError && getResponseStatus(error) === 404) {
         return;
       }
 
