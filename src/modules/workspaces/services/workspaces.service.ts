@@ -26,6 +26,20 @@ export function resolveReplyLocale(
 export class WorkspacesService {
   private readonly logger = createLogger('modules/workspaces/service');
 
+  private isNotFoundError(error: unknown): boolean {
+    if (!error || typeof error !== 'object') {
+      return false;
+    }
+
+    const candidate = error as { status?: unknown; statusCode?: unknown; message?: unknown };
+
+    return (
+      candidate.status === 404 ||
+      candidate.statusCode === 404 ||
+      (typeof candidate.message === 'string' && candidate.message.toLowerCase().includes('not found'))
+    );
+  }
+
   public resolveReplyLocale(
     agentLanguagePreference: SupportedLocale | null | undefined,
     inboundText: string
@@ -38,12 +52,26 @@ export class WorkspacesService {
     payload: Payload,
     inboundText: string = ''
   ): Promise<WorkspaceGateResult> {
-    const workspace = (await payload.findByID({
-      collection: 'workspaces',
-      id: workspaceId,
-      overrideAccess: true,
-      depth: 0,
-    })) as Workspace;
+    let workspace: Workspace;
+
+    try {
+      workspace = (await payload.findByID({
+        collection: 'workspaces',
+        id: workspaceId,
+        overrideAccess: true,
+        depth: 0,
+      })) as Workspace;
+    } catch (error) {
+      if (this.isNotFoundError(error)) {
+        throw new AppError('Workspace not found', ErrorCode.WORKSPACE_NOT_FOUND, 404, 'medium');
+      }
+
+      throw error;
+    }
+
+    if (!workspace) {
+      throw new AppError('Workspace not found', ErrorCode.WORKSPACE_NOT_FOUND, 404, 'medium');
+    }
 
     if (isActiveWorkspace(workspace.status)) {
       return { allowed: true };
@@ -84,18 +112,20 @@ export class WorkspacesService {
     payload: Payload,
     user: User
   ): Promise<Workspace> {
-    const workspace = (await payload.findByID({
-      collection: 'workspaces',
-      id: workspaceId,
-      user,
-      overrideAccess: false,
-      depth: 0,
-    })) as Workspace | null;
+    try {
+      return (await payload.findByID({
+        collection: 'workspaces',
+        id: workspaceId,
+        user,
+        overrideAccess: false,
+        depth: 0,
+      })) as Workspace;
+    } catch (error) {
+      if (this.isNotFoundError(error)) {
+        throw new AppError('Workspace not found', ErrorCode.WORKSPACE_NOT_FOUND, 404, 'medium');
+      }
 
-    if (!workspace) {
-      throw new AppError('Workspace not found', ErrorCode.WORKSPACE_NOT_FOUND, 404, 'medium');
+      throw error;
     }
-
-    return workspace;
   }
 }

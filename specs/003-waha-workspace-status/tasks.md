@@ -390,7 +390,7 @@
 
 ### Implementation for User Story 6
 
-- [ ] T032 [US6] Create the WhatsApp connection summary widget at `src/widgets/whatsapp-status/WhatsAppStatusWidget.tsx`. This widget must be **presentational only** to respect the project layering rules for `widgets/`. It is a React Server Component that:
+- [X] T032 [US6] Create the WhatsApp connection summary widget at `src/widgets/whatsapp-status/WhatsAppStatusWidget.tsx`. This widget must be **presentational only** to respect the project layering rules for `widgets/`. It is a React Server Component that:
   (1) Receives a preloaded prop like `{ session: WhatsappSession | null }` (or an equivalent serializable summary shape).
   (2) Does **not** call module services or Payload directly.
   (3) Renders a card showing:
@@ -403,9 +403,9 @@
 
   Before implementing, read the Payload skill at `.agents/skills/payload/SKILL.md` for Server Component composition patterns.
 
-- [ ] T033 [US6] Create the widget barrel export at `src/widgets/whatsapp-status/index.ts`. Export `WhatsAppStatusWidget` as the default/named export.
+- [X] T033 [US6] Create the widget barrel export at `src/widgets/whatsapp-status/index.ts`. Export `WhatsAppStatusWidget` as the default/named export.
 
-- [ ] T034 [US6] Create a feature-owned server component at `src/features/whatsapp-connection/ui/WhatsAppDashboardSummary.tsx` and integrate it into the customer dashboard page at `src/app/(frontend)/(dashboard)/dashboard/page.tsx`.
+- [X] T034 [US6] Create a feature-owned server component at `src/features/whatsapp-connection/ui/WhatsAppDashboardSummary.tsx` and integrate it into the customer dashboard page at `src/app/(frontend)/(dashboard)/dashboard/page.tsx`.
   - In `WhatsAppDashboardSummary.tsx`: call `getOwnerDashboardSession()`, then call `new WhatsAppService().getSessionForWorkspace(workspaceId, user)`, and render `WhatsAppStatusWidget` with the resulting session data. Do **not** call `getPayloadClient()` inside this feature component — the module must own Payload access.
   - In `dashboard/page.tsx`: keep the page aligned with the constitution layering rules by importing the feature component from `@/features/whatsapp-connection` and rendering it alongside the existing dashboard content. The page itself must **not** import `@/modules/*` or `@/payload/lib` directly.
   - The widget itself remains presentational only.
@@ -419,7 +419,7 @@
 
 **Purpose**: Tests, validation, and documentation.
 
-- [ ] T035 [P] Create unit tests for HMAC validation in `tests/unit/modules/whatsapp/validate-waha-webhook.test.ts`. Test cases:
+- [X] T035 [P] Create unit tests for HMAC validation in `tests/unit/modules/whatsapp/validate-waha-webhook.test.ts`. Test cases:
   (1) Valid HMAC-SHA512 with matching secret → returns `true`.
   (2) Invalid HMAC (wrong secret) → returns `false`.
   (3) Missing HMAC header (null) → returns `false`.
@@ -427,7 +427,7 @@
   (5) Algorithm header present but not `sha512` → returns `false`.
   Use Node.js `crypto` to generate valid HMACs in tests.
 
-- [ ] T036 [P] Create unit tests for IP allowlist validation in `tests/unit/modules/whatsapp/validate-waha-webhook.test.ts` (same file as T035). Test cases:
+- [X] T036 [P] Create unit tests for IP allowlist validation in `tests/unit/modules/whatsapp/validate-waha-webhook.test.ts` (same file as T035). Test cases:
   (1) Allowed IP → returns `true`.
   (2) Disallowed IP → returns `false`.
   (3) Empty allowlist in production mode → returns `false`.
@@ -435,13 +435,13 @@
   (5) `extractClientIp` with `x-forwarded-for` header → returns first IP.
   (6) `extractClientIp` without header → returns `'unknown'`.
 
-- [ ] T037 [P] Create unit tests for workspace status gate in `tests/unit/modules/workspaces/workspaces.service.test.ts`. Test cases:
+- [X] T037 [P] Create unit tests for workspace status gate in `tests/unit/modules/workspaces/workspaces.service.test.ts`. Test cases:
   (1) Active workspace → returns `{ allowed: true }`.
   (2) Paused workspace with Arabic agent preference → returns `{ allowed: false }` with Arabic reply.
   (3) Disabled workspace → returns `{ allowed: false }`.
   Mock the Payload instance (mock `findByID` and `find` methods).
 
-- [ ] T038 [P] Create unit tests for locale detection in `tests/unit/shared/locale-from-text.test.ts`. Test cases:
+- [X] T038 [P] Create unit tests for locale detection in `tests/unit/shared/locale-from-text.test.ts`. Test cases:
   (1) Arabic text (مرحبا كيف حالك) → returns `'ar'`.
   (2) English text ("Hello, how are you?") → returns `'en'`.
   (3) Mixed text with > 30% Arabic → returns `'ar'`.
@@ -449,12 +449,12 @@
   (5) Empty string → returns `'ar'` (default).
   (6) Numbers only → returns `'ar'` (default).
 
-- [ ] T039 [P] Create unit tests for system replies in `tests/unit/shared/system-replies.test.ts`. Test cases:
+- [X] T039 [P] Create unit tests for system replies in `tests/unit/shared/system-replies.test.ts`. Test cases:
   (1) `getSystemReply('UNAVAILABLE_REPLY', 'ar')` → returns the Arabic unavailability string.
   (2) `getSystemReply('UNAVAILABLE_REPLY', 'en')` → returns the English unavailability string.
   (3) All three reply keys exist and have both `ar` and `en` values.
 
-- [ ] T040 [P] Create unit tests for WAHA constants and client safety in `tests/unit/modules/whatsapp/constants.test.ts` and `tests/unit/modules/whatsapp/waha-client.test.ts`. Test cases:
+- [X] T040 [P] Create unit tests for WAHA constants and client safety in `tests/unit/modules/whatsapp/constants.test.ts` and `tests/unit/modules/whatsapp/waha-client.test.ts`. Test cases:
   (1) `WAHA_STATUS_MAP['WORKING']` → `'connected'`.
   (2) `WAHA_STATUS_MAP['SCAN_QR_CODE']` → `'qr_pending'`.
   (3) `WAHA_STATUS_MAP['FAILED']` → `'error'`.
@@ -463,7 +463,7 @@
   (6) `WahaClient` times out after 10 seconds and throws `WAHA_TIMEOUT`.
   (7) `WahaClient` error messages do not contain the WAHA API key or HMAC secret values.
 
-- [ ] T041 Create integration tests for the webhook route in `tests/integration/webhooks/waha-webhook.integration.test.ts`. Test using simulated HTTP requests (create a `Request` object, call the `POST` handler directly). Test cases:
+- [X] T041 Create integration tests for the webhook route in `tests/integration/webhooks/waha-webhook.integration.test.ts`. Test using simulated HTTP requests (create a `Request` object, call the `POST` handler directly). Test cases:
   (1) Valid HMAC + allowed IP + `session.status` event → returns 200.
   (2) Invalid HMAC → returns 401.
   (3) Invalid HMAC + malformed JSON body → still returns 401 (proves HMAC validation happens before JSON parsing).
@@ -474,13 +474,13 @@
   (8) Valid HMAC + unsupported non-text `message` event → returns 200 and sends the fixed `TEXT_ONLY_REPLY`.
   Need to set env vars for test (HMAC secret, allowed IPs) and mock WAHA sendText where appropriate.
 
-- [ ] T042 Run full validation suite: `pnpm typecheck && pnpm lint && pnpm build`. Fix any errors. All three commands must pass with zero errors. Do not proceed to T043 until all pass.
+- [X] T042 Run full validation suite: `pnpm typecheck && pnpm lint && pnpm build`. Fix any errors. All three commands must pass with zero errors. Do not proceed to T043 until all pass.
 
-- [ ] T043 Update `.env.example` to include all WAHA-related environment variables with descriptive comments: `WAHA_BASE_URL`, `WAHA_ADMIN_API_KEY`, `WAHA_WEBHOOK_HMAC_SECRET`, `WAHA_ALLOWED_IPS`, `ENABLE_WAHA_SANDBOX`.
+- [X] T043 Update `.env.example` to include all WAHA-related environment variables with descriptive comments: `WAHA_BASE_URL`, `WAHA_ADMIN_API_KEY`, `WAHA_WEBHOOK_HMAC_SECRET`, `WAHA_ALLOWED_IPS`, `ENABLE_WAHA_SANDBOX`.
 
-- [ ] T044 Create the implementation handover document at `docs/waha-workspace-status-implementation-handover.md`. Follow the format established by `docs/project-foundation-implementation-handover.md` and `docs/database-setup-implementation-handover.md`. Include: overview, scope, source files modified/created, phase-by-phase summary, task-to-code mapping, collections/data used (no changes), routes/actions/services, core business logic, auth/tenant/security rules, external integrations, tests performed, issues found and fixed, remaining limitations, final status.
+- [X] T044 Create the implementation handover document at `docs/waha-workspace-status-implementation-handover.md`. Follow the format established by `docs/project-foundation-implementation-handover.md` and `docs/database-setup-implementation-handover.md`. Include: overview, scope, source files modified/created, phase-by-phase summary, task-to-code mapping, collections/data used (no changes), routes/actions/services, core business logic, auth/tenant/security rules, external integrations, tests performed, issues found and fixed, remaining limitations, final status.
 
-- [ ] T045 Run the quickstart validation from `specs/003-waha-workspace-status/quickstart.md`. Execute each validation step. Record results. Update the spec status from `Draft` to `Implemented` in `specs/003-waha-workspace-status/spec.md`.
+- [X] T045 Run the quickstart validation from `specs/003-waha-workspace-status/quickstart.md`. Execute each validation step. Record results. Update the spec status from `Draft` to `Implemented` in `specs/003-waha-workspace-status/spec.md`.
 
 ---
 

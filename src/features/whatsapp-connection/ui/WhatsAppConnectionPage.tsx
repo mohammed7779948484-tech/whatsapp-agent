@@ -33,7 +33,10 @@ export async function WhatsAppConnectionPage() {
           refreshAction={session ? refreshWhatsappQrAction : null}
         />
 
-        <WhatsAppConnectionActions hasSession={Boolean(session)} />
+        <WhatsAppConnectionActions
+          hasSession={Boolean(session)}
+          providerStatus={session?.provider_status ?? null}
+        />
       </div>
     </main>
   );

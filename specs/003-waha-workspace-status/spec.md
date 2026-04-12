@@ -2,7 +2,7 @@
 
 **Feature Branch**: `003-waha-workspace-status`  
 **Created**: 2026-04-05  
-**Status**: Draft  
+**Status**: Implemented  
 **Input**: User description: "Phase 3 from the master implementation plan — WAHA module, session provisioning, QR flow, webhook security, workspace status gate, locale-aware replies, session state persistence, and customer dashboard connection widgets"
 
 ---

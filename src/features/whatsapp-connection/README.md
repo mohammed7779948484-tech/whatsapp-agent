@@ -16,4 +16,4 @@ viewing its connection state, and disconnecting the workspace number.
 
 ## Notes
 - The feature never queries Payload directly; all session work is delegated to `modules/whatsapp`.
-- QR refresh wiring is reserved for the next phase even though the QR card already exposes the UI slot for it.
+- QR refresh is wired through `refresh-whatsapp-qr.action.ts` and the QR card client state flow.

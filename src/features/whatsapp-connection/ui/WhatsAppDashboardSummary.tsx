@@ -1,18 +1,18 @@
-import type { ProviderStatus } from '@/modules/whatsapp';
+import { getOwnerDashboardSession } from '@/core/auth';
+import { WhatsAppService } from '@/modules/whatsapp';
+import { WhatsAppStatusWidget } from '@/widgets/whatsapp-status';
 
-import { PROVIDER_STATUS_LABELS } from '../constants';
+import { PROVIDER_STATUS_COLORS, PROVIDER_STATUS_LABELS } from '../constants';
 
-type WhatsAppDashboardSummaryProps = {
-  providerStatus: ProviderStatus | null;
-};
+export async function WhatsAppDashboardSummary() {
+  const { user, workspaceId } = await getOwnerDashboardSession();
+  const session = await new WhatsAppService().getSessionForWorkspace(workspaceId, user);
 
-export function WhatsAppDashboardSummary({ providerStatus }: WhatsAppDashboardSummaryProps) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-      <p className="text-sm text-slate-600">WhatsApp connection</p>
-      <p className="mt-2 text-lg font-medium text-slate-900">
-        {providerStatus ? PROVIDER_STATUS_LABELS[providerStatus] : 'Not provisioned'}
-      </p>
-    </div>
+    <WhatsAppStatusWidget
+      session={session}
+      statusLabels={PROVIDER_STATUS_LABELS}
+      statusColors={PROVIDER_STATUS_COLORS}
+    />
   );
 }

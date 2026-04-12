@@ -3,14 +3,16 @@ import { logger } from '@/core/logger';
 import { createWahaClient } from '@/core/providers/waha-client';
 import { getPayloadClient } from '@/payload/lib';
 import { getSystemReply } from '@/shared/lib';
-import { WhatsAppService } from '@/modules/whatsapp';
-import type { WahaMessagePayload, WahaSessionStatus, WahaWebhookPayload } from '@/modules/whatsapp/types';
-import { WorkspacesService } from '@/modules/workspaces';
 import {
   extractClientIp,
   validateHmac,
   validateIpAllowlist,
-} from '@/modules/whatsapp/validators/validate-waha-webhook';
+  WhatsAppService,
+  type WahaMessagePayload,
+  type WahaSessionStatus,
+  type WahaWebhookPayload,
+} from '@/modules/whatsapp';
+import { WorkspacesService } from '@/modules/workspaces';
 
 function normalizePhoneFromJid(jid: string | undefined): string | undefined {
   if (!jid) {
@@ -67,6 +69,24 @@ async function resolveAgentLanguagePreference(
   return languagePreference === 'ar' || languagePreference === 'en' ? languagePreference : null;
 }
 
+async function workspaceExists(
+  payloadClient: Awaited<ReturnType<typeof getPayloadClient>>,
+  workspaceId: string
+): Promise<boolean> {
+  try {
+    const workspace = await payloadClient.findByID({
+      collection: 'workspaces',
+      id: workspaceId,
+      overrideAccess: true,
+      depth: 0,
+    });
+
+    return Boolean(workspace);
+  } catch {
+    return false;
+  }
+}
+
 async function handleSessionStatusEvent(body: WahaWebhookPayload): Promise<Response> {
   const workspaceId = new WhatsAppService().resolveWorkspaceIdFromSessionName(body.session);
 
@@ -78,6 +98,16 @@ async function handleSessionStatusEvent(body: WahaWebhookPayload): Promise<Respo
   }
 
   const payloadClient = await getPayloadClient();
+  const hasWorkspace = await workspaceExists(payloadClient, workspaceId);
+
+  if (!hasWorkspace) {
+    logger.warn('Discarded WAHA session event for missing workspace', {
+      session: body.session,
+      workspaceId,
+    });
+    return Response.json({ status: 'ok', note: 'unknown session' });
+  }
+
   const status =
     'status' in body.payload && typeof body.payload.status === 'string'
       ? (body.payload.status as WahaSessionStatus)
@@ -140,6 +170,14 @@ async function handleMessageEvent(body: WahaWebhookPayload): Promise<Response> {
   const messagePayload = body.payload;
   const payloadClient = await getPayloadClient();
   const workspacesService = new WorkspacesService();
+
+  if (messagePayload.fromMe === true) {
+    logger.info('Ignored outbound WAHA message event', {
+      session: body.session,
+      workspaceId,
+    });
+    return Response.json({ status: 'ok' });
+  }
 
   try {
     const gate = await workspacesService.checkStatusGate(

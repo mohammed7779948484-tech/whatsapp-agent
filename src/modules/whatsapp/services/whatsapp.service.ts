@@ -113,16 +113,32 @@ export class WhatsAppService {
 
     // Direct owner CRUD stays closed; this trusted create uses the already verified
     // workspace and computed session name instead of widening raw collection write access.
-    const createdRecord = await payload.create({
-      collection: 'whatsapp_sessions',
-      data: {
-        workspace: normalizedWorkspaceId,
-        session_name: sessionName,
-        provider_status: 'disconnected',
-      },
-      overrideAccess: true,
-      depth: 0,
-    });
+    let createdRecord: WhatsappSession;
+
+    try {
+      createdRecord = (await payload.create({
+        collection: 'whatsapp_sessions',
+        data: {
+          workspace: normalizedWorkspaceId,
+          session_name: sessionName,
+          provider_status: 'disconnected',
+        },
+        overrideAccess: true,
+        depth: 0,
+      })) as WhatsappSession;
+    } catch (error) {
+      try {
+        await wahaClient.deleteSession(sessionName);
+      } catch (cleanupError) {
+        this.logger.warn('Failed to roll back WAHA session after local persistence error', {
+          workspaceId: normalizedWorkspaceId,
+          sessionName,
+          reason: cleanupError instanceof Error ? cleanupError.message : String(cleanupError),
+        });
+      }
+
+      throw error;
+    }
 
     let providerStatus: ProviderStatus = createdRecord.provider_status;
     let qrCode: string | null = createdRecord.qr_code ?? null;
@@ -229,7 +245,9 @@ export class WhatsAppService {
       return null;
     }
 
-    return sessionName.slice(WAHA_SESSION_NAME_PREFIX.length);
+    const suffix = sessionName.slice(WAHA_SESSION_NAME_PREFIX.length);
+
+    return /^\d+$/.test(suffix) ? suffix : null;
   }
 
   public async updateSessionState(

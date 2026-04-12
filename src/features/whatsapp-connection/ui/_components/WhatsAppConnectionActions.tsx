@@ -3,14 +3,21 @@
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
+import type { ProviderStatus } from '@/modules/whatsapp';
+
 import { disconnectWhatsappSessionAction } from '../../actions/disconnect-whatsapp-session.action';
 import { provisionWhatsappSessionAction } from '../../actions/provision-whatsapp-session.action';
+import { refreshWhatsappQrAction } from '../../actions/refresh-whatsapp-qr.action';
 
 type WhatsAppConnectionActionsProps = {
   hasSession: boolean;
+  providerStatus: ProviderStatus | null;
 };
 
-export function WhatsAppConnectionActions({ hasSession }: WhatsAppConnectionActionsProps) {
+export function WhatsAppConnectionActions({
+  hasSession,
+  providerStatus,
+}: WhatsAppConnectionActionsProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -41,7 +48,7 @@ export function WhatsAppConnectionActions({ hasSession }: WhatsAppConnectionActi
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex flex-wrap gap-3">
-        {hasSession ? (
+        {hasSession && providerStatus !== 'disconnected' ? (
           <button
             type="button"
             onClick={() => runAction(disconnectWhatsappSessionAction)}
@@ -53,11 +60,13 @@ export function WhatsAppConnectionActions({ hasSession }: WhatsAppConnectionActi
         ) : (
           <button
             type="button"
-            onClick={() => runAction(provisionWhatsappSessionAction)}
+            onClick={() =>
+              runAction(providerStatus === 'disconnected' ? refreshWhatsappQrAction : provisionWhatsappSessionAction)
+            }
             disabled={isPending}
             className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isPending ? 'Working...' : 'Provision Session'}
+            {isPending ? 'Working...' : providerStatus === 'disconnected' ? 'Reconnect' : 'Provision Session'}
           </button>
         )}
       </div>
