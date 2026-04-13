@@ -1,5 +1,7 @@
 import type { KnowledgeFileDisplayStatus } from '../../types';
+import { DeleteButton } from './DeleteButton';
 import type { KnowledgeFileListItem } from './KnowledgeFileList';
+import { RetryButton } from './RetryButton';
 
 interface KnowledgeFileRowProps {
   file: KnowledgeFileListItem;
@@ -38,7 +40,12 @@ export function KnowledgeFileRow({ file }: KnowledgeFileRowProps) {
           {STATUS_LABELS[file.displayStatus]}
         </span>
       </td>
-      <td className="px-4 py-4 text-sm text-slate-400">Actions coming soon</td>
+      <td className="px-4 py-4">
+        <div className="flex flex-wrap items-start gap-2">
+          {file.displayStatus === 'failed' ? <RetryButton fileId={file.id} /> : null}
+          <DeleteButton fileId={file.id} />
+        </div>
+      </td>
     </tr>
   );
 }

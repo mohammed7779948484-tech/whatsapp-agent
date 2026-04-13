@@ -251,14 +251,14 @@
 
 ### Implementation for User Story 4
 
-- [ ] T031 [US4] Create the retry Server Action at `src/features/knowledge-uploads/actions/retry-ingestion.action.ts`. This file must use `'use server'` directive. Follow the contract in `specs/004-knowledge-ingestion/contracts/server-actions.md`. The action receives `fileId: number` and must:
+- [x] T031 [US4] Create the retry Server Action at `src/features/knowledge-uploads/actions/retry-ingestion.action.ts`. This file must use `'use server'` directive. Follow the contract in `specs/004-knowledge-ingestion/contracts/server-actions.md`. The action receives `fileId: number` and must:
   1. Call `getOwnerDashboardSession()` to get `user` and `workspaceId`.
   2. Instantiate `KnowledgeService` and delegate retry logic to `knowledgeService.retryIngestion(fileId, workspaceId, user)`. **Do not perform Payload lookup logic inline in this action.** The module service owns the owner-scoped file/job lookup, eligibility check, cleanup, and re-enqueue flow.
   3. Call `revalidatePath('/knowledge')`.
   4. Return `{ success: true, data: { jobId } }`.
   5. Wrap in try/catch, return generic error on failure.
 
-- [ ] T032 [US4] Add a "Retry" button to `KnowledgeFileRow.tsx`. The button must:
+- [x] T032 [US4] Add a "Retry" button to `KnowledgeFileRow.tsx`. The button must:
   1. Only be visible when the file's display status is `'failed'`.
   2. Be a client-interactive element. Create a small client component `RetryButton` (inline or in `_components/`) that calls the `retryIngestion` Server Action with the file ID on click.
   3. Show a loading state while the retry is in progress.
@@ -277,21 +277,21 @@
 
 ### Implementation for User Story 5
 
-- [ ] T033 [US5] Create the delete Server Action at `src/features/knowledge-uploads/actions/delete-knowledge-file.action.ts`. This file must use `'use server'` directive. Follow the contract in `specs/004-knowledge-ingestion/contracts/server-actions.md`. The action receives `fileId: number` and must:
+- [x] T033 [US5] Create the delete Server Action at `src/features/knowledge-uploads/actions/delete-knowledge-file.action.ts`. This file must use `'use server'` directive. Follow the contract in `specs/004-knowledge-ingestion/contracts/server-actions.md`. The action receives `fileId: number` and must:
   1. Call `getOwnerDashboardSession()` to get `user` and `workspaceId`.
   2. Instantiate `KnowledgeService` and delegate deletion to `knowledgeService.deleteFile(fileId, workspaceId, user)`. **Do not perform Payload delete logic inline in this action.** The module service owns the owner-scoped `knowledge_files` lookup and delete flow.
   3. Call `revalidatePath('/knowledge')`.
   4. Return `{ success: true }`.
   5. Wrap in try/catch, return generic error on failure.
 
-- [ ] T034 [US5] Add a "Delete" button to `KnowledgeFileRow.tsx`. The button must:
+- [x] T034 [US5] Add a "Delete" button to `KnowledgeFileRow.tsx`. The button must:
   1. Be visible for all files regardless of status (owners can delete files in any state, including in-progress).
   2. Be a client-interactive element. Create a small client component `DeleteButton` (inline or in `_components/`) that calls the `deleteKnowledgeFile` Server Action with the file ID on click.
   3. Show a confirmation prompt before deletion (e.g., `window.confirm('Delete this file? This will remove all associated knowledge.')` or a simple confirmation UI).
   4. Show a loading state while the deletion is in progress.
   5. On success, the page revalidation refreshes the file list.
 
-- [ ] T035 [US5] Verify graceful handling of file deletion during in-progress ingestion. Confirm that:
+- [x] T035 [US5] Verify graceful handling of file deletion during in-progress ingestion. Confirm that:
   1. If a file is deleted while its `ingest-parse` job is enqueued or running, the parse job's first step loads the file record. If the record is not found (deleted), the job logs a warning and returns `200` (no-op). This is already handled by the `parseFile` method in T013.
   2. If a file is deleted while its `ingest-chunk` or `ingest-embed` job is enqueued, the same graceful behavior applies (checked in T014 and T015).
   3. No additional code changes should be needed for this — this task is a verification task. Review the `parseFile`, `chunkFile`, and `embedFile` methods to confirm each starts by loading the file and returns early if not found. If any method does NOT do this, fix it now.
