@@ -308,20 +308,20 @@
 
 ### Implementation for User Story 6
 
-- [ ] T036 [US6] Create the presentational widget at `src/widgets/knowledge-freshness/KnowledgeFreshnessWidget.tsx`. This receives props: `indexedCount: number` and `lastUpdatedAt: string | null`. It renders a card with:
+- [x] T036 [US6] Create the presentational widget at `src/widgets/knowledge-freshness/KnowledgeFreshnessWidget.tsx`. This receives props: `indexedCount: number` and `lastUpdatedAt: string | null`. It renders a card with:
   - Title: "Knowledge Base"
   - If `lastUpdatedAt` is null: "No knowledge uploaded" with a suggestion to upload files
   - If `lastUpdatedAt` is present: formatted date + count text (e.g., "3 files indexed")
   - Follow the same presentational pattern as `src/widgets/whatsapp-status/WhatsAppStatusWidget.tsx`
   Create the barrel export at `src/widgets/knowledge-freshness/index.ts`.
 
-- [ ] T037 [US6] Create the data loader component at `src/features/knowledge-uploads/ui/KnowledgeDashboardSummary.tsx`. This is an async server component that:
+- [x] T037 [US6] Create the data loader component at `src/features/knowledge-uploads/ui/KnowledgeDashboardSummary.tsx`. This is an async server component that:
   1. Calls `getOwnerDashboardSession()` to get `user` and `workspaceId`.
   2. Instantiates `KnowledgeService` and calls `getWorkspaceKnowledgeSummary(workspaceId, user)`.
   3. Renders `KnowledgeFreshnessWidget` with the fetched data.
   Export this component from the feature barrel at `src/features/knowledge-uploads/index.ts`.
 
-- [ ] T038 [US6] Update the dashboard page at `src/app/(frontend)/(dashboard)/dashboard/page.tsx`. Import `KnowledgeDashboardSummary` from `@/features/knowledge-uploads`. Add it below the existing `<WhatsAppDashboardSummary />` component. Do not modify or remove existing dashboard content.
+- [x] T038 [US6] Update the dashboard page at `src/app/(frontend)/(dashboard)/dashboard/page.tsx`. Import `KnowledgeDashboardSummary` from `@/features/knowledge-uploads`. Add it below the existing `<WhatsAppDashboardSummary />` component. Do not modify or remove existing dashboard content.
 
 **Checkpoint**: Dashboard page shows the knowledge freshness card alongside the WhatsApp status card. Run `pnpm typecheck`.
 

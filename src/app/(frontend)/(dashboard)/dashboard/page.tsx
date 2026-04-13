@@ -1,4 +1,5 @@
 import { getOwnerDashboardSession } from '@/core/auth';
+import { KnowledgeDashboardSummary } from '@/features/knowledge-uploads';
 import { WhatsAppDashboardSummary } from '@/features/whatsapp-connection';
 import { OwnerLogoutButton } from '@/widgets/owner-logout';
 
@@ -22,6 +23,7 @@ export default async function DashboardPage() {
         </div>
 
         <WhatsAppDashboardSummary />
+        <KnowledgeDashboardSummary />
       </div>
     </main>
   );
