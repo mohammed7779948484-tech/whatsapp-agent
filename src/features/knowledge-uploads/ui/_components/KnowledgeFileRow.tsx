@@ -16,8 +16,8 @@ const STATUS_STYLES: Record<KnowledgeFileDisplayStatus, string> = {
 const STATUS_LABELS: Record<KnowledgeFileDisplayStatus, string> = {
   indexed: 'Indexed',
   failed: 'Failed',
-  parsing: 'Parsing...',
-  indexing: 'Indexing...',
+  parsing: 'Parsing…',
+  indexing: 'Indexing…',
   uploaded: 'Uploaded',
 };
 
@@ -31,7 +31,10 @@ export function KnowledgeFileRow({ file }: KnowledgeFileRowProps) {
       <td className="px-4 py-4 text-sm font-medium text-slate-900">{file.filename ?? `File #${file.id}`}</td>
       <td className="px-4 py-4 text-sm text-slate-600">{formatUploadedAt(file.uploaded_at)}</td>
       <td className="px-4 py-4">
-        <span className={`rounded-full border px-3 py-1 text-xs font-medium ${STATUS_STYLES[file.displayStatus]}`}>
+        <span
+          id={`status-badge-${file.id}`}
+          className={`rounded-full border px-3 py-1 text-xs font-medium ${STATUS_STYLES[file.displayStatus]}`}
+        >
           {STATUS_LABELS[file.displayStatus]}
         </span>
       </td>

@@ -225,13 +225,13 @@
 
 ### Implementation for User Story 3
 
-- [ ] T029 [US3] Verify and polish `KnowledgeUploadsPage.tsx` to correctly display per-file status badges and the workspace `last_knowledge_update_at` timestamp. The page must:
+- [x] T029 [US3] Verify and polish `KnowledgeUploadsPage.tsx` to correctly display per-file status badges and the workspace `last_knowledge_update_at` timestamp. The page must:
   1. Map each file from the service response through `mapFileToDisplayStatus(file.parse_status, file.ingestion_status)` to get the display status.
   2. Pass the mapped status to `KnowledgeFileRow`.
   3. Display `lastUpdatedAt` from the workspace summary. If null, show "No knowledge indexed yet". If present, format as a human-readable date string.
   4. If the files array is empty, show an empty state: "No files uploaded yet. Upload a PDF or CSV to get started."
 
-- [ ] T030 [US3] Verify that the `KnowledgeFileRow` component renders the correct status badge colors:
+- [x] T030 [US3] Verify that the `KnowledgeFileRow` component renders the correct status badge colors:
   - `'indexed'` → green badge text "Indexed"
   - `'failed'` → red badge text "Failed"
   - `'parsing'` → yellow/amber badge text "Parsing…"

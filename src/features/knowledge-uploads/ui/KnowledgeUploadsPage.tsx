@@ -11,7 +11,7 @@ interface KnowledgeFileListItem extends KnowledgeFile {
 }
 
 function formatLastUpdated(lastUpdatedAt: string | null): string {
-  return lastUpdatedAt ? new Date(lastUpdatedAt).toLocaleString() : 'No knowledge uploaded yet';
+  return lastUpdatedAt ? new Date(lastUpdatedAt).toLocaleString() : 'No knowledge indexed yet';
 }
 
 export async function KnowledgeUploadsPage() {
@@ -34,9 +34,13 @@ export async function KnowledgeUploadsPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
           <h1 className="text-2xl font-semibold text-slate-900">Knowledge Base</h1>
-          <p className="mt-2 text-sm text-slate-600">
-            Last updated: {formatLastUpdated(workspaceSummary.lastUpdatedAt)}
-          </p>
+          {workspaceSummary.lastUpdatedAt ? (
+            <p className="mt-2 text-sm text-slate-600">
+              Last updated: {formatLastUpdated(workspaceSummary.lastUpdatedAt)}
+            </p>
+          ) : (
+            <p className="mt-2 text-sm text-slate-600">No knowledge indexed yet</p>
+          )}
 
           <div className="mt-6">
             <KnowledgeUploadForm />
@@ -45,8 +49,9 @@ export async function KnowledgeUploadsPage() {
 
         {displayFiles.length === 0 ? (
           <section className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center shadow-sm">
-            <p className="text-base font-medium text-slate-900">No files uploaded yet</p>
-            <p className="mt-2 text-sm text-slate-600">Upload a PDF or CSV to get started.</p>
+            <p className="text-base font-medium text-slate-900">
+              No files uploaded yet. Upload a PDF or CSV to get started.
+            </p>
           </section>
         ) : (
           <KnowledgeFileList files={displayFiles} />
