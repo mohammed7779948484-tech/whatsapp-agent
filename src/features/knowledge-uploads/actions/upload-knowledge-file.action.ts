@@ -14,12 +14,23 @@ import { KNOWLEDGE_PAGE_PATH } from '../constants';
 
 const ACCEPTED_MIME_TYPES = new Set(['application/pdf', 'text/csv']);
 const logger = createLogger('features/knowledge-uploads/upload-action');
+const WORKSPACE_ID_PATTERN = /^\d+$/;
 
 export async function uploadKnowledgeFile(
   formData: FormData
 ): Promise<ActionResult<{ fileId: number }>> {
   try {
     const { user, workspaceId } = await getOwnerDashboardSession();
+
+    if (!WORKSPACE_ID_PATTERN.test(workspaceId)) {
+      throw new AppError(
+        'Invalid workspace context for knowledge upload',
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        'medium'
+      );
+    }
+
     const numericWorkspaceId = Number.parseInt(workspaceId, 10);
     const uploadedFile = formData.get('file');
 
