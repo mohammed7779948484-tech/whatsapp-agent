@@ -1,5 +1,6 @@
 import type { User } from '@/payload-types';
 import { AppError, ErrorCode } from '@/core/errors';
+import { resolveUserWorkspaceId } from '@/payload/access/workspace-scope.access';
 import { getSession } from './get-session';
 
 export async function verifyWorkspaceSession(req: Request): Promise<string> {
@@ -14,8 +15,7 @@ export async function verifyWorkspaceSession(req: Request): Promise<string> {
     );
   }
 
-  const tenantRef = user.tenants?.[0]?.tenant;
-  const tenantId = typeof tenantRef === 'number' ? tenantRef : tenantRef?.id;
+  const tenantId = resolveUserWorkspaceId(user);
 
   if (!tenantId) {
     throw new AppError(

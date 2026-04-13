@@ -1,6 +1,8 @@
 import type { Access } from 'payload';
 
-import type { User } from '@/payload-types';
+import type { User } from '../../payload-types.ts';
+
+import { resolveUserWorkspaceId } from './workspace-scope.access.ts';
 
 export const canReadOwnWorkspace: Access = ({ req }) => {
   const user = req.user as User | null;
@@ -13,8 +15,7 @@ export const canReadOwnWorkspace: Access = ({ req }) => {
     return true;
   }
 
-  const tenantRef = user.tenants?.[0]?.tenant;
-  const tenantId = typeof tenantRef === 'number' ? tenantRef : tenantRef?.id;
+  const tenantId = resolveUserWorkspaceId(user);
 
   if (!tenantId) {
     return false;

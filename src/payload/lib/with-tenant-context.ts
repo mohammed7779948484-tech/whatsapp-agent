@@ -1,5 +1,7 @@
 import type { Payload, Where } from 'payload';
-import type { Config, User } from '@/payload-types';
+import type { Config, User } from '../../payload-types.ts';
+
+import { resolveUserWorkspaceId } from '../access/workspace-scope.access.ts';
 
 type CollectionSlug = keyof Config['collections'];
 
@@ -14,10 +16,9 @@ interface TenantContextOptions {
 export async function withTenantContext<T = unknown>(
   options: TenantContextOptions
 ): Promise<{ docs: T[] }> {
-  const { payload, user, collection, tenantField = 'tenant', where } = options;
+  const { payload, user, collection, tenantField = 'workspace', where } = options;
 
-  const tenantRef = user.tenants?.[0]?.tenant;
-  const tenantId = typeof tenantRef === 'number' ? tenantRef : tenantRef?.id;
+  const tenantId = resolveUserWorkspaceId(user);
 
   if (!tenantId) {
     throw new Error('User does not have an associated workspace');

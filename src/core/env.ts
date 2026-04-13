@@ -96,9 +96,38 @@ function validateNodeEnv(): 'development' | 'production' {
 function validateEnv() {
   const appUrl = validateUrl('APP_URL', getRequiredVariable('APP_URL'));
   const payloadSecret = getRequiredVariable('PAYLOAD_SECRET');
+  const enableWahaSandbox = validateBoolean('ENABLE_WAHA_SANDBOX', false);
+  const rawWahaAllowedIps = process.env.WAHA_ALLOWED_IPS ?? '';
+  const parsedWahaAllowedIps = rawWahaAllowedIps
+    .split(',')
+    .map((ip) => ip.trim())
+    .filter(Boolean);
+  const rawWahaBaseUrl = process.env.WAHA_BASE_URL;
+  const rawWahaAdminApiKey = process.env.WAHA_ADMIN_API_KEY;
+  const rawWahaWebhookSecret = process.env.WAHA_WEBHOOK_HMAC_SECRET;
 
   if (payloadSecret.length < MIN_SECRET_LENGTH) {
     throw new Error(`PAYLOAD_SECRET must be at least ${MIN_SECRET_LENGTH} characters long`);
+  }
+
+  if (!enableWahaSandbox) {
+    if (!rawWahaBaseUrl) {
+      throw new Error('Missing required environment variable: WAHA_BASE_URL');
+    }
+
+    if (!rawWahaAdminApiKey) {
+      throw new Error('Missing required environment variable: WAHA_ADMIN_API_KEY');
+    }
+
+    if (!rawWahaWebhookSecret) {
+      throw new Error('Missing required environment variable: WAHA_WEBHOOK_HMAC_SECRET');
+    }
+
+    if (!rawWahaAllowedIps || parsedWahaAllowedIps.length === 0) {
+      throw new Error(
+        'WAHA_ALLOWED_IPS must contain at least one IP when ENABLE_WAHA_SANDBOX is false'
+      );
+    }
   }
 
   return {
@@ -121,14 +150,15 @@ function validateEnv() {
     QSTASH_TOKEN: process.env.QSTASH_TOKEN,
     QSTASH_CURRENT_SIGNING_KEY: process.env.QSTASH_CURRENT_SIGNING_KEY,
     QSTASH_NEXT_SIGNING_KEY: process.env.QSTASH_NEXT_SIGNING_KEY,
-    WAHA_BASE_URL: validateOptionalUrl('WAHA_BASE_URL'),
-    WAHA_ADMIN_API_KEY: process.env.WAHA_ADMIN_API_KEY,
-    WAHA_WEBHOOK_HMAC_SECRET: process.env.WAHA_WEBHOOK_HMAC_SECRET,
-    WAHA_ALLOWED_IPS: (process.env.WAHA_ALLOWED_IPS ?? '')
-      .split(',')
-      .map((ip) => ip.trim())
-      .filter(Boolean),
-    ENABLE_WAHA_SANDBOX: validateBoolean('ENABLE_WAHA_SANDBOX', false),
+    WAHA_BASE_URL: enableWahaSandbox
+      ? validateOptionalUrl('WAHA_BASE_URL') ?? ''
+      : validateUrl('WAHA_BASE_URL', rawWahaBaseUrl as string),
+    WAHA_ADMIN_API_KEY: enableWahaSandbox ? rawWahaAdminApiKey ?? '' : (rawWahaAdminApiKey as string),
+    WAHA_WEBHOOK_HMAC_SECRET: enableWahaSandbox
+      ? rawWahaWebhookSecret ?? ''
+      : (rawWahaWebhookSecret as string),
+    WAHA_ALLOWED_IPS: parsedWahaAllowedIps,
+    ENABLE_WAHA_SANDBOX: enableWahaSandbox,
     RETENTION_DAYS: validatePositiveInteger('RETENTION_DAYS', DEFAULT_RETENTION_DAYS),
     MAX_UPLOAD_MB: validatePositiveInteger('MAX_UPLOAD_MB', DEFAULT_MAX_UPLOAD_MB),
   } as const;

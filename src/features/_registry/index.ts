@@ -1,8 +1,14 @@
 import { authLoginConfig } from '@/features/auth-login';
+import { knowledgeUploadsConfig } from '@/features/knowledge-uploads';
+import { whatsappConnectionConfig } from '@/features/whatsapp-connection';
 
 import type { FeatureRegistry, FeatureConfig } from './types';
 
-export const featureRegistry: FeatureRegistry = new Map([[authLoginConfig.id, authLoginConfig]]);
+export const featureRegistry: FeatureRegistry = new Map([
+  [authLoginConfig.id, authLoginConfig],
+  [knowledgeUploadsConfig.id, knowledgeUploadsConfig],
+  [whatsappConnectionConfig.id, whatsappConnectionConfig],
+]);
 
 export function registerFeature(config: FeatureConfig): void {
   featureRegistry.set(config.id, config);
