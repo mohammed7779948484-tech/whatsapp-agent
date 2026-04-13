@@ -237,6 +237,7 @@ export interface KnowledgeFile {
   uploaded_at: string;
   parsed_at?: string | null;
   indexed_at?: string | null;
+  parsed_content?: string | null;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -538,6 +539,7 @@ export interface KnowledgeFilesSelect<T extends boolean = true> {
   uploaded_at?: T;
   parsed_at?: T;
   indexed_at?: T;
+  parsed_content?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;

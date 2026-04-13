@@ -71,6 +71,10 @@ export const KnowledgeFiles: CollectionConfig = {
       name: 'indexed_at',
       type: 'date',
     },
+    {
+      name: 'parsed_content',
+      type: 'textarea',
+    },
   ],
   timestamps: true,
 };
