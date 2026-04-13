@@ -143,14 +143,14 @@
 
 ### Implementation for User Story 1
 
-- [ ] T018 [US1] Create the `knowledge-uploads` feature scaffold. Create the following files following the approved feature template at `.specify/memory/standards/feature-template.md`:
+- [x] T018 [US1] Create the `knowledge-uploads` feature scaffold. Create the following files following the approved feature template at `.specify/memory/standards/feature-template.md`:
   - `src/features/knowledge-uploads/README.md` — document the feature purpose: "Owner-facing knowledge file upload, listing, retry, and deletion UI with associated Server Actions."
   - `src/features/knowledge-uploads/constants.ts` — export `KNOWLEDGE_UPLOADS_FEATURE_ID = 'knowledge-uploads' as const` and `KNOWLEDGE_PAGE_PATH = '/knowledge' as const`.
   - `src/features/knowledge-uploads/types.ts` — export `KnowledgeFileDisplayStatus` (union: `'uploaded' | 'parsing' | 'indexing' | 'indexed' | 'failed'`) and a helper function `mapFileToDisplayStatus(parseStatus: string, ingestionStatus: string): KnowledgeFileDisplayStatus`. This helper maps stored DB states to UI labels: `ingestion_status === 'indexed'` → `'indexed'`; `ingestion_status === 'failed' || parse_status === 'failed'` → `'failed'`; `parse_status === 'parsing'` → `'parsing'`; `ingestion_status === 'processing'` → `'indexing'`; default initial DB state (`pending` / `pending`) → `'uploaded'`.
   - `src/features/knowledge-uploads/feature.config.ts` — export a `FeatureConfig` object with `id: KNOWLEDGE_UPLOADS_FEATURE_ID`, `name: 'Knowledge Uploads'`, `description: 'Owner-facing knowledge file upload, listing, retry, deletion, and freshness surfaces.'`, `dependencies: ['modules/knowledge']`, `enabled: true`.
   - `src/features/knowledge-uploads/index.ts` — re-export `knowledgeUploadsConfig` from `feature.config.ts`, types from `types.ts`, and constants from `constants.ts`. Note: `KnowledgeUploadsPage` is added to this barrel when created in T020; `KnowledgeDashboardSummary` is added in T037.
 
-- [ ] T019 [US1] Create the upload Server Action at `src/features/knowledge-uploads/actions/upload-knowledge-file.action.ts`. This file must use `'use server'` directive at the top. Follow the contract in `specs/004-knowledge-ingestion/contracts/server-actions.md` exactly. The action receives `FormData` and must:
+- [x] T019 [US1] Create the upload Server Action at `src/features/knowledge-uploads/actions/upload-knowledge-file.action.ts`. This file must use `'use server'` directive at the top. Follow the contract in `specs/004-knowledge-ingestion/contracts/server-actions.md` exactly. The action receives `FormData` and must:
   1. Call `getOwnerDashboardSession()` to get `user` and `workspaceId`.
   2. Extract the file from `formData.get('file')`. Validate it is a `File` instance.
   3. Validate MIME type is `'application/pdf'` or `'text/csv'`. Return `ActionResult` error with message `'Only PDF and CSV files are accepted'` if not.
@@ -161,7 +161,7 @@
   8. Return `{ success: true, data: { fileId } }` from the service result.
   9. Wrap the flow in try/catch. On errors, return `{ success: false, error: 'Upload failed. Please try again.' }`.
 
-- [ ] T020 [US1] Create the Knowledge Uploads page component at `src/features/knowledge-uploads/ui/KnowledgeUploadsPage.tsx`. This is an async server component that:
+- [x] T020 [US1] Create the Knowledge Uploads page component at `src/features/knowledge-uploads/ui/KnowledgeUploadsPage.tsx`. This is an async server component that:
   1. Calls `getOwnerDashboardSession()` to get `user` and `workspaceId`.
   2. Instantiates `KnowledgeService` and calls `getFilesForWorkspace(workspaceId, user)`.
   3. Calls `getWorkspaceKnowledgeSummary(workspaceId, user)` for the freshness timestamp.
@@ -173,19 +173,19 @@
      - An empty state when no files exist: text "No files uploaded yet" and a prompt to upload
   Also update the barrel export at `src/features/knowledge-uploads/index.ts` to add `KnowledgeUploadsPage`.
 
-- [ ] T021 [US1] Create the upload form client component at `src/features/knowledge-uploads/ui/_components/KnowledgeUploadForm.tsx`. This is a `'use client'` component. It must:
+- [x] T021 [US1] Create the upload form client component at `src/features/knowledge-uploads/ui/_components/KnowledgeUploadForm.tsx`. This is a `'use client'` component. It must:
   1. Render a `<form>` with a file input accepting `.pdf,.csv` and a submit button.
   2. On submit, construct a `FormData` with the selected file, call the `uploadKnowledgeFile` Server Action, and display success or error feedback.
   3. Show a loading state while the upload is in progress (disable the button, show a spinner or "Uploading…" text).
   4. On success, clear the file input. The page revalidation from the Server Action will refresh the file list.
 
-- [ ] T022 [US1] Create the file list component at `src/features/knowledge-uploads/ui/_components/KnowledgeFileList.tsx`. This is a server component that receives a `files` prop (array of file objects with display status). It renders a list/table with columns: filename, upload date (formatted), status badge, and an actions column (placeholder for retry/delete, implemented in later stories).
+- [x] T022 [US1] Create the file list component at `src/features/knowledge-uploads/ui/_components/KnowledgeFileList.tsx`. This is a server component that receives a `files` prop (array of file objects with display status). It renders a list/table with columns: filename, upload date (formatted), status badge, and an actions column (placeholder for retry/delete, implemented in later stories).
 
-- [ ] T023 [US1] Create the file row component at `src/features/knowledge-uploads/ui/_components/KnowledgeFileRow.tsx`. This receives a single file object and renders: the filename, the formatted `uploaded_at` date, a status badge (colored by status: `indexed` = green, `failed` = red, `parsing`/`indexing` = yellow/blue, `uploaded` = gray), and an actions slot (empty for now, filled in US4/US5).
+- [x] T023 [US1] Create the file row component at `src/features/knowledge-uploads/ui/_components/KnowledgeFileRow.tsx`. This receives a single file object and renders: the filename, the formatted `uploaded_at` date, a status badge (colored by status: `indexed` = green, `failed` = red, `parsing`/`indexing` = yellow/blue, `uploaded` = gray), and an actions slot (empty for now, filled in US4/US5).
 
-- [ ] T024 [US1] Create the Knowledge Uploads page route at `src/app/(frontend)/(dashboard)/knowledge/page.tsx`. This file must import and render `KnowledgeUploadsPage` from `@/features/knowledge-uploads`. Add appropriate `metadata` export with `title: 'Knowledge Base'`.
+- [x] T024 [US1] Create the Knowledge Uploads page route at `src/app/(frontend)/(dashboard)/knowledge/page.tsx`. This file must import and render `KnowledgeUploadsPage` from `@/features/knowledge-uploads`. Add appropriate `metadata` export with `title: 'Knowledge Base'`.
 
-- [ ] T025 [US1] Register the `knowledge-uploads` feature in `src/features/_registry/index.ts`. Import `knowledgeUploadsConfig` from `@/features/knowledge-uploads` and add it to the `featureRegistry` Map, matching the pattern used by `authLoginConfig` and `whatsappConnectionConfig`.
+- [x] T025 [US1] Register the `knowledge-uploads` feature in `src/features/_registry/index.ts`. Import `knowledgeUploadsConfig` from `@/features/knowledge-uploads` and add it to the `featureRegistry` Map, matching the pattern used by `authLoginConfig` and `whatsappConnectionConfig`.
 
 **Checkpoint**: Owner can upload a PDF or CSV. The file appears in the Knowledge Uploads page list. An `ingestion_jobs` record is created. QStash receives an `ingest-parse` message. Invalid files and file-limit violations are rejected with clear errors. Run `pnpm typecheck`.
 
