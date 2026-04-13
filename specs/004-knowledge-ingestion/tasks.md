@@ -199,7 +199,7 @@
 
 ### Implementation for User Story 2
 
-- [ ] T026 [US2] Replace the `ingest-parse` scaffold at `src/app/api/jobs/ingest-parse/route.ts`. Remove the existing `createNotImplementedResponse` import and handler. Implement the handler per `specs/004-knowledge-ingestion/contracts/job-routes.md`. The file must:
+- [x] T026 [US2] Replace the `ingest-parse` scaffold at `src/app/api/jobs/ingest-parse/route.ts`. Remove the existing `createNotImplementedResponse` import and handler. Implement the handler per `specs/004-knowledge-ingestion/contracts/job-routes.md`. The file must:
   1. Import `verifySignatureAppRouter` from `@upstash/qstash/nextjs`.
   2. Define an `async function handler(request: Request)` that:
      a. Parses the JSON body. Validates `fileId` and `workspaceId` are present and numeric. If not, return `NextResponse.json({ error: 'Invalid payload' }, { status: 400 })`.
@@ -209,9 +209,9 @@
   3. Export `POST = verifySignatureAppRouter(handler)`.
   This route must NOT handle any logic itself; all business logic is in `KnowledgeService.parseFile()`.
 
-- [ ] T027 [US2] Replace the `ingest-chunk` scaffold at `src/app/api/jobs/ingest-chunk/route.ts`. Follow the exact same error-handling pattern as T026 but call `KnowledgeService.chunkFile(fileId, workspaceId)`. Use `verifySignatureAppRouter` as the outermost wrapper. Service returns normally on success, no-ops, and terminal failures (route returns `200`). Service throws on transient errors only (route returns `500` for QStash retry).
+- [x] T027 [US2] Replace the `ingest-chunk` scaffold at `src/app/api/jobs/ingest-chunk/route.ts`. Follow the exact same error-handling pattern as T026 but call `KnowledgeService.chunkFile(fileId, workspaceId)`. Use `verifySignatureAppRouter` as the outermost wrapper. Service returns normally on success, no-ops, and terminal failures (route returns `200`). Service throws on transient errors only (route returns `500` for QStash retry).
 
-- [ ] T028 [US2] Replace the `ingest-embed` scaffold at `src/app/api/jobs/ingest-embed/route.ts`. Follow the exact same error-handling pattern as T026 but call `KnowledgeService.embedFile(fileId, workspaceId)`. Use `verifySignatureAppRouter` as the outermost wrapper. Service returns normally on success, no-ops, and terminal failures (route returns `200`). Service throws on transient errors only (route returns `500` for QStash retry).
+- [x] T028 [US2] Replace the `ingest-embed` scaffold at `src/app/api/jobs/ingest-embed/route.ts`. Follow the exact same error-handling pattern as T026 but call `KnowledgeService.embedFile(fileId, workspaceId)`. Use `verifySignatureAppRouter` as the outermost wrapper. Service returns normally on success, no-ops, and terminal failures (route returns `200`). Service throws on transient errors only (route returns `500` for QStash retry).
 
 **Checkpoint**: All three job routes compile and are secured with QStash signature verification. Each delegates to the knowledge service. The full pipeline `parse → chunk → embed → indexed` is wired. Run `pnpm typecheck`.
 

@@ -1,5 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+vi.mock('@upstash/qstash/nextjs', () => ({
+  verifySignatureAppRouter: (handler: (request: Request) => Response | Promise<Response>) => handler,
+}));
+
 vi.mock('@/core/env', () => ({
   env: {
     WAHA_WEBHOOK_HMAC_SECRET: 'test-secret',
@@ -68,8 +72,16 @@ describe('foundation API routes', () => {
     });
   });
 
-  it('returns a placeholder job response and rejects unsigned WAHA webhooks', async () => {
-    const jobResponse = await ingestParsePost();
+  it('rejects invalid job payloads and unsigned WAHA webhooks', async () => {
+    const jobResponse = await ingestParsePost(
+      new Request('http://localhost/api/jobs/ingest-parse', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      })
+    );
     const webhookResponse = await wahaWebhookPost(
       new Request('http://localhost/api/webhooks/waha', {
         method: 'POST',
@@ -80,13 +92,10 @@ describe('foundation API routes', () => {
       })
     );
 
-    expect(jobResponse.status).toBe(501);
+    expect(jobResponse.status).toBe(400);
     expect(webhookResponse.status).toBe(401);
 
-    await expect(jobResponse.json()).resolves.toEqual({
-      error: 'Not implemented',
-      job: 'ingest-parse',
-    });
+    await expect(jobResponse.json()).resolves.toEqual({ error: 'Invalid payload' });
     await expect(webhookResponse.json()).resolves.toEqual({
       error: 'Unauthorized',
     });
