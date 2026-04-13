@@ -213,6 +213,41 @@ export class KnowledgeService {
     }
   }
 
+  private async validateFileWorkspaceMatch(
+    payload: PayloadClient,
+    params: {
+      file: KnowledgeFileRecord;
+      fileId: number;
+      workspaceId: number;
+      jobId: number;
+      stage: 'chunking' | 'embedding';
+    }
+  ): Promise<number | null> {
+    const fileWorkspaceId = resolveRelationId(params.file.workspace);
+
+    if (fileWorkspaceId === params.workspaceId) {
+      return fileWorkspaceId;
+    }
+
+    const message = `Knowledge file workspace mismatch during ${params.stage}`;
+
+    this.logger.error(message, {
+      fileId: params.fileId,
+      expectedWorkspaceId: fileWorkspaceId,
+      receivedWorkspaceId: params.workspaceId,
+      jobId: params.jobId,
+      stage: params.stage,
+    });
+
+    await this.markFileAndJobFailed(payload, {
+      fileId: params.fileId,
+      jobId: params.jobId,
+      message,
+    });
+
+    return null;
+  }
+
   private getDatabase(payload: PayloadClient): PayloadDatabaseExecutor {
     return payload.db as unknown as PayloadDatabaseExecutor;
   }
@@ -289,7 +324,11 @@ export class KnowledgeService {
       });
     }
 
-    const totalPages = typeof firstPage.totalPages === 'number' ? firstPage.totalPages : 1;
+    const totalDocs = typeof firstPage.totalDocs === 'number' ? firstPage.totalDocs : 0;
+    const totalPages =
+      typeof firstPage.totalPages === 'number'
+        ? firstPage.totalPages
+        : Math.max(1, Math.ceil(totalDocs / (limit || 1)));
 
     for (let page = 2; page <= totalPages; page += 1) {
       const nextPage = (await payload.find({
@@ -539,6 +578,18 @@ export class KnowledgeService {
       throw new AppError('Ingestion job not found', ErrorCode.NOT_FOUND_ERROR, 404, 'medium');
     }
 
+    const fileWorkspaceId = await this.validateFileWorkspaceMatch(payload, {
+      file,
+      fileId,
+      workspaceId,
+      jobId: job.id,
+      stage: 'chunking',
+    });
+
+    if (fileWorkspaceId === null) {
+      return;
+    }
+
     const parsedContent = file.parsed_content?.trim();
     if (!parsedContent) {
       const message = 'No parsed content available for chunking';
@@ -583,7 +634,7 @@ export class KnowledgeService {
         await payload.create({
           collection: 'knowledge_chunks' as never,
           data: {
-            workspace: workspaceId,
+            workspace: fileWorkspaceId,
             file: fileId,
             chunk_index: chunk.chunkIndex,
             content: chunk.content,
@@ -631,6 +682,18 @@ export class KnowledgeService {
       throw new AppError('Ingestion job not found', ErrorCode.NOT_FOUND_ERROR, 404, 'medium');
     }
 
+    const fileWorkspaceId = await this.validateFileWorkspaceMatch(payload, {
+      file,
+      fileId,
+      workspaceId,
+      jobId: job.id,
+      stage: 'embedding',
+    });
+
+    if (fileWorkspaceId === null) {
+      return;
+    }
+
     const chunks = await this.getAllChunksForFile(payload, fileId);
 
     if (chunks.length === 0) {
@@ -656,7 +719,7 @@ export class KnowledgeService {
       for (const embedding of embeddings) {
         await this.insertKnowledgeVector({
           payload,
-          workspaceId,
+          workspaceId: fileWorkspaceId,
           fileId,
           chunkId: embedding.chunkId,
           embedding: embedding.embedding,
@@ -673,7 +736,7 @@ export class KnowledgeService {
       });
       await payload.update({
         collection: 'workspaces',
-        id: workspaceId,
+        id: fileWorkspaceId,
         data: {
           last_knowledge_update_at: now,
         },

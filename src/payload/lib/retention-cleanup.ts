@@ -9,7 +9,11 @@ export const DEFAULT_RETENTION_DAYS = 30;
 export function getRetentionCleanupFilter(
   retentionDays: number = DEFAULT_RETENTION_DAYS
 ): Where {
-  const cutoffDate = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000);
+  const safeRetentionDays =
+    typeof retentionDays === 'number' && Number.isFinite(retentionDays) && retentionDays > 0
+      ? retentionDays
+      : DEFAULT_RETENTION_DAYS;
+  const cutoffDate = new Date(Date.now() - safeRetentionDays * 24 * 60 * 60 * 1000);
 
   return {
     createdAt: {
